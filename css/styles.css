@@ -1,0 +1,122 @@
+:root {
+  --bg-body: #0d0814;
+  --bg-surface: rgba(22, 14, 34, 0.68);
+  --bg-card: rgba(32, 18, 48, 0.58);
+  --border: rgba(244, 114, 182, 0.22);
+  --border-subtle: rgba(244, 114, 182, 0.1);
+  --text-main: #fff5f8;
+  --text-muted: #d8b4e2;
+  --accent-pink: #f472b6;   /* Sakura Blossom Pink */
+  --accent-rose: #fb7185;   /* Rose Petal */
+  --accent-purple: #c084fc; /* Petal Lilac */
+  --accent-teal: #34d399;   /* Matcha Leaf */
+  --accent-sky: #38bdf8;    /* Spring Sky */
+  --accent-amber: #fde047;  /* Lantern Glow */
+  --today-col: rgba(244, 114, 182, 0.16);
+  --today-border: rgba(244, 114, 182, 0.45);
+  --glow-sakura: 0 0 25px rgba(244, 114, 182, 0.35);
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg-body) !important;
+  background-image: 
+    radial-gradient(circle at 50% -10%, rgba(244, 114, 182, 0.2) 0%, transparent 60%),
+    linear-gradient(to bottom, rgba(16, 10, 26, 0.62) 0%, rgba(10, 6, 18, 0.78) 100%),
+    url('../assets/sakura-bg.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  color: var(--text-main);
+  overflow-x: hidden;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.font-brand {
+  font-family: 'Syne', sans-serif;
+}
+
+.font-mono-num {
+  font-family: 'Space Mono', monospace;
+}
+
+/* Frosted Sakura Glassmorphism */
+.theme-card {
+  background: var(--bg-surface);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 220, 235, 0.15);
+}
+
+.theme-subcard {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Frosted Sticky Columns for Horizontal Table Scroll */
+.sticky-col-1 {
+  position: sticky;
+  left: 0;
+  z-index: 25;
+  background: rgba(22, 14, 34, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.sticky-col-2 {
+  position: sticky;
+  left: 190px;
+  z-index: 25;
+  background: rgba(22, 14, 34, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Tactile Matrix Day Cell Button */
+.matrix-cell-btn {
+  transition: all 0.14s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.matrix-cell-btn:active {
+  transform: scale(0.82);
+}
+
+.matrix-cell-btn:hover {
+  transform: scale(1.18);
+  z-index: 10;
+}
+
+/* Slim Aesthetic Blossom Scrollbar */
+::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(244, 114, 182, 0.25);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(244, 114, 182, 0.45);
+}
+
+/* Fullscreen Transparent Sakura Canvas */
+#sakura-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  background: transparent !important;
+}

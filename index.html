@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progression Matrix - Sakura Edition</title>
+  
+  <!-- PWA Manifest & App Icons -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d0814">
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+  <link rel="apple-touch-icon" href="assets/icon.svg">
+
+  <!-- Third-Party Libraries -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+  <!-- Application Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="min-h-screen antialiased selection:bg-pink-500 selection:text-white pb-24 relative">
+
+  <!-- Background Sakura Petals Canvas -->
+  <canvas id="sakura-canvas"></canvas>
+
+  <!-- Modular App Components Layout -->
+  <div class="relative z-10 max-w-[1750px] mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+    <app-header></app-header>
+    <app-briefing></app-briefing>
+    <app-bonsai></app-bonsai>
+    <app-metrics></app-metrics>
+    <app-matrix></app-matrix>
+    <app-footer></app-footer>
+  </div>
+
+  <!-- Modals & Overlay Drawers -->
+  <app-modal></app-modal>
+  <app-note-modal></app-note-modal>
+  <app-wrapped></app-wrapped>
+  <app-ai-coach></app-ai-coach>
+
+  <!-- 1. HTML Web Components -->
+  <script src="js/components/header.js"></script>
+  <script src="js/components/briefing.js"></script>
+  <script src="js/components/bonsai.js"></script>
+  <script src="js/components/metrics.js"></script>
+  <script src="js/components/matrix.js"></script>
+  <script src="js/components/modal.js"></script>
+  <script src="js/components/note-modal.js"></script>
+  <script src="js/components/wrapped.js"></script>
+  <script src="js/components/ai-coach.js"></script>
+  <script src="js/components/footer.js"></script>
+
+  <!-- 2. Ambient Engines (Sakura & FX) -->
+  <script src="js/sakura.js"></script>
+  <script src="js/fx.js"></script>
+
+  <!-- 3. AI & Core State Logic -->
+  <script src="js/ai.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- PWA Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => {
+          console.log('SW registration note:', err);
+        });
+      });
+    }
+
+    // PWA Install Prompt Listener
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const installBtn = document.getElementById('pwa-install-btn');
+      if (installBtn) {
+        installBtn.classList.remove('hidden');
+        installBtn.onclick = async () => {
+          installBtn.classList.add('hidden');
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          deferredPrompt = null;
+        };
+      }
+    });
+  </script>
+</body>
+</html>

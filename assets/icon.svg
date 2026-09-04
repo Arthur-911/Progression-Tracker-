@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#241434"/>
+      <stop offset="100%" stop-color="#0e0716"/>
+    </linearGradient>
+    <linearGradient id="pinkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f472b6"/>
+      <stop offset="100%" stop-color="#fb7185"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)"/>
+  <circle cx="256" cy="256" r="160" fill="none" stroke="rgba(244, 114, 182, 0.25)" stroke-width="8"/>
+  <path d="M256 140 C280 140, 310 190, 310 230 C310 270, 280 300, 256 300 C232 300, 202 270, 202 230 C202 190, 232 140, 256 140 Z" fill="url(#pinkGrad)"/>
+  <path d="M256 140 C280 140, 310 190, 310 230 C310 270, 280 300, 256 300 C232 300, 202 270, 202 230 C202 190, 232 140, 256 140 Z" transform="rotate(72 256 256)" fill="url(#pinkGrad)"/>
+  <path d="M256 140 C280 140, 310 190, 310 230 C310 270, 280 300, 256 300 C232 300, 202 270, 202 230 C202 190, 232 140, 256 140 Z" transform="rotate(144 256 256)" fill="url(#pinkGrad)"/>
+  <path d="M256 140 C280 140, 310 190, 310 230 C310 270, 280 300, 256 300 C232 300, 202 270, 202 230 C202 190, 232 140, 256 140 Z" transform="rotate(216 256 256)" fill="url(#pinkGrad)"/>
+  <path d="M256 140 C280 140, 310 190, 310 230 C310 270, 280 300, 256 300 C232 300, 202 270, 202 230 C202 190, 232 140, 256 140 Z" transform="rotate(288 256 256)" fill="url(#pinkGrad)"/>
+  <circle cx="256" cy="256" r="32" fill="#fde047"/>
+  <circle cx="256" cy="256" r="20" fill="#f59e0b"/>
+</svg>
