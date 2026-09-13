@@ -67,6 +67,13 @@ function playFanfareSound() {
   } catch (e) {}
 }
 
+function getThemeConfettiColors() {
+  if (typeof window.getCurrentThemeConfettiColors === 'function') {
+    return window.getCurrentThemeConfettiColors();
+  }
+  return ['#c084fc', '#f472b6', '#38bdf8', '#4ade80', '#fde047'];
+}
+
 /**
  * Cute micro-sparks on tile click
  */
@@ -81,18 +88,19 @@ function fireTileSparks(event) {
     startVelocity: 16,
     ticks: 30,
     origin: { x, y },
-    colors: ['#c084fc', '#f472b6', '#4ade80', '#38bdf8', '#fde047'],
+    colors: getThemeConfettiColors(),
     shapes: ['circle']
   });
 }
 
 /**
- * Full celebratory confetti shower with pastel sparkles
+ * Full celebratory confetti shower with theme sparkles
  */
 function fireGrandCelebration() {
   if (typeof confetti !== 'function') return;
   playFanfareSound();
 
+  const themeColors = getThemeConfettiColors();
   const duration = 2.2 * 1000;
   const end = Date.now() + duration;
 
@@ -102,14 +110,14 @@ function fireGrandCelebration() {
       angle: 60,
       spread: 55,
       origin: { x: 0, y: 0.65 },
-      colors: ['#c084fc', '#f472b6', '#38bdf8', '#4ade80', '#fde047']
+      colors: themeColors
     });
     confetti({
       particleCount: 5,
       angle: 120,
       spread: 55,
       origin: { x: 1, y: 0.65 },
-      colors: ['#c084fc', '#f472b6', '#38bdf8', '#4ade80', '#fde047']
+      colors: themeColors
     });
 
     if (Date.now() < end) {
@@ -122,7 +130,7 @@ function fireGrandCelebration() {
       particleCount: 80,
       spread: 90,
       origin: { y: 0.6 },
-      colors: ['#c084fc', '#f472b6', '#ffffff', '#38bdf8', '#fde047'],
+      colors: themeColors,
       shapes: ['circle', 'star']
     });
   }, 300);

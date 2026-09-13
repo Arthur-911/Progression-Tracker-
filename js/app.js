@@ -12,6 +12,333 @@ const PILLARS = [
   { id: 'personal', name: 'Mind', emoji: '🌸', badge: 'border-pink-400/30 bg-pink-400/10 text-pink-300', checkGradient: 'from-pink-400 to-rose-400' }
 ];
 
+// Aesthetic Themes Gallery Configuration
+const THEMES = {
+  sakura: {
+    id: 'sakura',
+    name: 'Sakura Zen',
+    icon: '🌸',
+    tagline: 'Blossom your daily rhythm & monthly cadence',
+    metaColor: '#0d0814',
+    badge: 'Sakura Zen',
+    confettiColors: ['#c084fc', '#f472b6', '#fb7185', '#ffffff', '#fde047'],
+    accentGradient: 'linear-gradient(135deg, #f472b6, #fb7185)',
+    companionTitle: 'Bonsai Tree',
+    companionStages: ['Winter Branch 🌱', 'Budding Sprout 🌿', 'Half Bloom 🌸', 'Radiant Bloom 🌺✨'],
+    companionRanks: ['Novice Sprout', 'Budding Apprentice 🌿', 'Blossom Warrior 🌸', 'Sakura Sage ✨'],
+    companionQuotes: [
+      'Quiet winter branches gather strength in the soil.',
+      'Fresh spring buds awaken on patient branches.',
+      'Pink petals unfurl with every promise kept to yourself.',
+      'Radiant full bloom achieved! Your consistency shines brightly.'
+    ],
+    companionBloomIndicators: ['🌱', '🌿', '🌸', '🌺✨'],
+    shieldName: 'Petal Shields',
+    shieldEmoji: '🌸',
+    coachName: 'Sakura Sensei',
+    coachRole: 'Zen Habit Coach & Rhythm Guide',
+    coachGreeting: 'Greetings! I am <strong>Sakura Sensei</strong>, your embedded Zen habit companion.<br><br>I continuously review your progression matrix, streaks, and time pacing. Tap any chip above or ask me anything to cultivate your daily cadence! 🍵'
+  },
+  matcha: {
+    id: 'matcha',
+    name: 'Matcha Garden',
+    icon: '🍵',
+    tagline: 'Steep your daily discipline in mindful calm',
+    metaColor: '#07130b',
+    badge: 'Matcha Garden',
+    confettiColors: ['#10b981', '#34d399', '#6ee7b7', '#facc15', '#ffffff'],
+    accentGradient: 'linear-gradient(135deg, #10b981, #059669)',
+    companionTitle: 'Bamboo Grove',
+    companionStages: ['Bamboo Seedling 🌱', 'Green Sprout 🎋', 'Lush Bamboo 🎍', 'Zen Sanctuary ⛩️✨'],
+    companionRanks: ['Garden Novice', 'Verdant Keeper 🌿', 'Grove Guardian 🎋', 'Tea Master 🍵✨'],
+    companionQuotes: [
+      'Roots run deep in silence before bamboo leaps toward the sun.',
+      'Each mindful habit bends like green bamboo without breaking.',
+      'Quiet rhythm and pure focus nourish the entire grove.',
+      'Tranquil mastery achieved! Your discipline is an oasis of calm.'
+    ],
+    companionBloomIndicators: ['🌱', '🎋', '🎍', '⛩️✨'],
+    shieldName: 'Jade Stones',
+    shieldEmoji: '🍵',
+    coachName: 'Master Rin',
+    coachRole: 'Tea Master & Habit Harmonizer',
+    coachGreeting: 'Welcome to the garden. I am <strong>Master Rin</strong>.<br><br>Like preparing the finest matcha, cultivating lasting habits requires patience, warmth, and steady hands. Let us examine your rhythm today.'
+  },
+  celestial: {
+    id: 'celestial',
+    name: 'Celestial Nebula',
+    icon: '🌌',
+    tagline: 'Navigate your monthly horizon across the stars',
+    metaColor: '#060714',
+    badge: 'Celestial Nebula',
+    confettiColors: ['#a855f7', '#38bdf8', '#c084fc', '#ffffff', '#fde047'],
+    accentGradient: 'linear-gradient(135deg, #a855f7, #38bdf8)',
+    companionTitle: 'Cosmic Core',
+    companionStages: ['Stardust Seed ☄️', 'Planetoid 🪐', 'Protostar 🌟', 'Radiant Galaxy 🌌✨'],
+    companionRanks: ['Stargazer', 'Orbit Navigator 🛰️', 'Pulsar Captain 🌟', 'Cosmic Sovereign 🌌✨'],
+    companionQuotes: [
+      'Stardust condenses in the dark before a star is born.',
+      'Your orbital velocity is steadying into permanent rhythm.',
+      'Pulsar ignition: daily habits burning with cosmic clarity.',
+      'Supernova achievement! Your momentum bends space and time.'
+    ],
+    companionBloomIndicators: ['☄️', '🪐', '🌟', '🌌✨'],
+    shieldName: 'Stasis Shields',
+    shieldEmoji: '🌌',
+    coachName: 'Astra',
+    coachRole: 'Cosmic Navigator & Velocity AI',
+    coachGreeting: 'Systems online! I am <strong>Astra</strong>, your celestial habit navigator.<br><br>I monitor your orbital trajectory, momentum delta, and execution velocity. All instruments are tuned to keep you on course.'
+  },
+  cafe: {
+    id: 'cafe',
+    name: 'Rainy Lo-Fi Café',
+    icon: '☕',
+    tagline: 'Warm brew, gentle rain, and unhurried consistency',
+    metaColor: '#130e0a',
+    badge: 'Rainy Lo-Fi Café',
+    confettiColors: ['#f59e0b', '#fb923c', '#d97706', '#fed7aa', '#ffffff'],
+    accentGradient: 'linear-gradient(135deg, #f59e0b, #d97706)',
+    companionTitle: 'Café Houseplant',
+    companionStages: ['Seed in Mug ☕', 'Small Sprout 🌱', 'Lush Monstera 🪴', 'Blooming Shrub ☕✨'],
+    companionRanks: ['Warm Sipper', 'Corner Regular 🥐', 'Roast Specialist ☕', 'Café Connoisseur 🪴✨'],
+    companionQuotes: [
+      'Take a breath and enjoy the aroma. One sip, one step at a time.',
+      'Growth comes from steady watering, not stormy rush.',
+      'Your leaves are unfurling with cozy, unhurried discipline.',
+      'Perfect blend achieved! A masterpiece of calm consistency.'
+    ],
+    companionBloomIndicators: ['☕', '🌱', '🪴', '☕✨'],
+    shieldName: 'Rain Checks',
+    shieldEmoji: '☕',
+    coachName: 'Milo the Barista',
+    coachRole: 'Warm Café Companion & Routine Specialist',
+    coachGreeting: 'Hey there! Pull up a chair and grab a warm cup. I am <strong>Milo</strong>.<br><br>Habit tracking does not have to be stressful—let us take it one calm, steady step at a time while the rain falls outside.'
+  },
+  cyberpunk: {
+    id: 'cyberpunk',
+    name: 'Cyberpunk Horizon',
+    icon: '⚡',
+    tagline: 'Overclock your executive function in neon gridlock',
+    metaColor: '#07070f',
+    badge: 'Cyberpunk Horizon',
+    confettiColors: ['#00f3ff', '#ff007f', '#00ff66', '#ffffff', '#ffe600'],
+    accentGradient: 'linear-gradient(135deg, #00f3ff, #ff007f)',
+    companionTitle: 'Cyber Core',
+    companionStages: ['Dormant Chip 💾', 'Combat Drone 🛸', 'Sentient AI 🤖', 'Singularity Core ⚡💎'],
+    companionRanks: ['Script Kiddie', 'Netrunner 🛸', 'Grid Architect 🤖', 'Cyber Singularity ⚡💎'],
+    companionQuotes: [
+      'Boot sequence initialized. Loading daily protocol stack.',
+      'Bandwidth expanding: micro-routines firing without latency.',
+      'Overclocked subsystem: productivity output exceeding baseline.',
+      'Maximum throughput achieved! Cybernetic singularity unlocked.'
+    ],
+    companionBloomIndicators: ['💾', '🛸', '🤖', '⚡💎'],
+    shieldName: 'Firewall Shields',
+    shieldEmoji: '⚡',
+    coachName: 'NEXUS-9',
+    coachRole: 'Cybernetic Habit Optimizer & Tactical AI',
+    coachGreeting: 'Jack in, Operator. <strong>NEXUS-9</strong> tactical interface initialized.<br><br>I analyze execution latency, route around friction, and optimize your monthly throughput. Ready for protocol sync.'
+  },
+  aurora: {
+    id: 'aurora',
+    name: 'Nordic Aurora',
+    icon: '❄️',
+    tagline: 'Crisp arctic focus under shimmering polar skies',
+    metaColor: '#060e17',
+    badge: 'Nordic Aurora',
+    confettiColors: ['#38bdf8', '#34d399', '#bae6fd', '#ffffff', '#a7f3d0'],
+    accentGradient: 'linear-gradient(135deg, #38bdf8, #34d399)',
+    companionTitle: 'Frost Totem',
+    companionStages: ['Frost Shard ❄️', 'Glacial Crystal 💎', 'Spirit Wolf 🐺', 'Aurora Crown 👑✨'],
+    companionRanks: ['Snow Scout', 'Tundra Tracker ❄️', 'Glacier Sentinel 🐺', 'Aurora Monarch 👑✨'],
+    companionQuotes: [
+      'In the quiet chill of the north, great strength crystalizes.',
+      'Pure focus cuts through distraction like winter wind.',
+      'The northern lights ignite for those who brave the cold trail.',
+      'Glacial majesty unlocked! Pure stoic mastery and crystal clarity.'
+    ],
+    companionBloomIndicators: ['❄️', '💎', '🐺', '👑✨'],
+    shieldName: 'Glacier Wards',
+    shieldEmoji: '❄️',
+    coachName: 'Freja',
+    coachRole: 'Nordic Habit Mentor & Stoic Guide',
+    coachGreeting: 'Velkommen. I am <strong>Freja</strong>.<br><br>Like surviving the northern winter, discipline is about clarity, eliminating excess, and holding your ground through the storm. Let us see where your trail leads today.'
+  },
+  sunset: {
+    id: 'sunset',
+    name: 'Sunset Mirage',
+    icon: '🏜️',
+    tagline: 'Golden hour calm and steadfast horizon pacing',
+    metaColor: '#160e14',
+    badge: 'Sunset Mirage',
+    confettiColors: ['#fb7185', '#f59e0b', '#fb923c', '#ffffff', '#fecdd3'],
+    accentGradient: 'linear-gradient(135deg, #fb7185, #f59e0b)',
+    companionTitle: 'Desert Oasis',
+    companionStages: ['Pebble & Seed 🪨', 'Flowering Saguaro 🌵', 'Hidden Spring 💧', 'Lush Oasis 🌴✨'],
+    companionRanks: ['Dune Wanderer', 'Mirage Seeker 🌵', 'Caravan Leader 🐪', 'Oasis Custodian 🌴✨'],
+    companionQuotes: [
+      'A long desert journey begins with a single step across the dunes.',
+      'Even in dry arid sands, patient roots always find life.',
+      'The cool dusk brings refreshment to the determined traveler.',
+      'Oasis discovered! A fertile sanctuary earned through enduring grit.'
+    ],
+    companionBloomIndicators: ['🪨', '🌵', '💧', '🌴✨'],
+    shieldName: 'Oasis Sanctuaries',
+    shieldEmoji: '🏜️',
+    coachName: 'Sol',
+    coachRole: 'Desert Guide & Philosophical Mentor',
+    coachGreeting: 'Welcome, traveler. I am <strong>Sol</strong>.<br><br>The desert teaches us that haste leads to thirst, but steady pacing crosses any ocean of sand. Let us review the milestones on your journey today.'
+  }
+};
+
+let currentThemeId = localStorage.getItem('progression_tracker_theme') || 'sakura';
+window.THEMES = THEMES;
+window.getCurrentTheme = () => currentThemeId;
+window.getCurrentThemeData = () => THEMES[currentThemeId] || THEMES.sakura;
+window.getCurrentThemeConfettiColors = () => (THEMES[currentThemeId] || THEMES.sakura).confettiColors;
+
+function applyTheme(themeId) {
+  if (!THEMES[themeId]) themeId = 'sakura';
+  currentThemeId = themeId;
+  const theme = THEMES[themeId];
+
+  // 1. HTML Root & Body Attribute
+  document.documentElement.setAttribute('data-theme', themeId);
+  if (document.body) {
+    document.body.setAttribute('data-theme', themeId);
+  }
+
+  // 2. Meta Theme Color
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (metaTheme) metaTheme.setAttribute('content', theme.metaColor);
+
+  // 3. Ambient Canvas Particles
+  if (typeof window.setAmbientTheme === 'function') {
+    window.setAmbientTheme(themeId);
+  }
+
+  // 4. Header Dynamic Updates
+  const headerBrandBg = document.getElementById('header-brand-bg');
+  if (headerBrandBg) headerBrandBg.style.background = theme.accentGradient;
+
+  const headerBrandIcon = document.getElementById('header-brand-icon');
+  if (headerBrandIcon) headerBrandIcon.textContent = theme.icon;
+
+  const headerThemeName = document.getElementById('header-theme-name');
+  if (headerThemeName) headerThemeName.textContent = theme.name.split(' ')[0];
+
+  const headerThemeIcon = document.getElementById('header-theme-icon');
+  if (headerThemeIcon) headerThemeIcon.textContent = theme.icon;
+
+  const headerThemeBadge = document.getElementById('header-theme-badge');
+  if (headerThemeBadge) headerThemeBadge.textContent = theme.badge;
+
+  const headerSubtitle = document.getElementById('header-subtitle');
+  if (headerSubtitle) headerSubtitle.textContent = theme.tagline;
+
+  const headerMatrixSpan = document.getElementById('header-matrix-span');
+  if (headerMatrixSpan) headerMatrixSpan.style.color = 'var(--accent-pink)';
+
+  // 5. Footer Dynamic Update
+  const footerThemeEdition = document.getElementById('footer-theme-edition');
+  if (footerThemeEdition) footerThemeEdition.textContent = `${theme.name} Edition`;
+
+  // 6. AI Coach Dynamic Updates
+  const aiCoachLauncherIcon = document.getElementById('ai-coach-launcher-icon');
+  if (aiCoachLauncherIcon) aiCoachLauncherIcon.textContent = theme.icon;
+
+  const aiCoachLauncherName = document.getElementById('ai-coach-launcher-name');
+  if (aiCoachLauncherName) aiCoachLauncherName.textContent = theme.coachName;
+
+  const aiCoachDrawerAvatar = document.getElementById('ai-coach-drawer-avatar');
+  if (aiCoachDrawerAvatar) aiCoachDrawerAvatar.textContent = theme.icon;
+
+  const aiCoachDrawerName = document.getElementById('ai-coach-drawer-name');
+  if (aiCoachDrawerName) aiCoachDrawerName.textContent = theme.coachName;
+
+  const aiCoachDrawerRole = document.getElementById('ai-coach-drawer-role');
+  if (aiCoachDrawerRole) aiCoachDrawerRole.textContent = theme.coachRole;
+
+  const aiCoachInitialIcon = document.getElementById('ai-coach-initial-icon');
+  if (aiCoachInitialIcon) aiCoachInitialIcon.textContent = theme.icon;
+
+  const aiCoachInitialText = document.getElementById('ai-coach-initial-text');
+  if (aiCoachInitialText) aiCoachInitialText.innerHTML = theme.coachGreeting;
+
+  // 7. Bonsai Quote Icon
+  const quoteIcon = document.getElementById('bonsai-quote-icon');
+  if (quoteIcon) quoteIcon.textContent = theme.icon;
+
+  // 8. Refresh Theme Dropdown List
+  renderThemeMenuList();
+
+  // 9. Re-render companion and shields
+  if (typeof state !== 'undefined' && state.activeMonthId && state.months && state.months[state.activeMonthId]) {
+    const activeMonth = state.months[state.activeMonthId];
+    const { year, month } = parseMonthId(state.activeMonthId);
+    const daysInMonth = getDaysInMonth(year, month);
+    const { currentYear, currentMonth, currentDay } = getTodayInfo();
+    const isActual = (year === currentYear && month === currentMonth);
+    const stats = renderSummaryCards(activeMonth, daysInMonth, isActual, currentDay);
+    renderBonsai(stats.monthProgressPct, stats.earnedEffortPoints, activeMonth);
+  }
+
+  if (window.lucide) lucide.createIcons();
+}
+
+window.selectTheme = function(themeId) {
+  if (!THEMES[themeId]) return;
+  localStorage.setItem('progression_tracker_theme', themeId);
+  applyTheme(themeId);
+  const menu = document.getElementById('theme-dropdown-menu');
+  if (menu) menu.classList.add('hidden');
+  if (window.playTickSound) playTickSound(true);
+};
+
+window.toggleThemeDropdown = function(e) {
+  if (e) e.stopPropagation();
+  const menu = document.getElementById('theme-dropdown-menu');
+  if (!menu) return;
+  const isHidden = menu.classList.contains('hidden');
+  if (isHidden) {
+    renderThemeMenuList();
+    menu.classList.remove('hidden');
+    if (window.lucide) lucide.createIcons();
+  } else {
+    menu.classList.add('hidden');
+  }
+};
+
+function renderThemeMenuList() {
+  const container = document.getElementById('theme-list-container');
+  if (!container) return;
+  container.innerHTML = Object.values(THEMES).map(t => {
+    const isActive = t.id === currentThemeId;
+    return `
+      <button 
+        type="button"
+        onclick="selectTheme('${t.id}')" 
+        class="w-full text-left p-2 rounded-xl flex items-center justify-between gap-2 transition theme-select-item ${isActive ? 'active border border-white/20' : 'border border-transparent'}"
+      >
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-7 h-7 rounded-lg flex items-center justify-center text-sm shadow-sm flex-shrink-0" style="background: ${t.accentGradient};">
+            <span>${t.icon}</span>
+          </div>
+          <div class="truncate">
+            <div class="text-xs font-bold text-white flex items-center gap-1.5">
+              <span>${t.name}</span>
+            </div>
+            <div class="text-[10px] text-pink-200/60 truncate">${t.tagline}</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-1 flex-shrink-0">
+          ${isActive ? `<span class="text-xs font-black text-emerald-400">✓</span>` : ''}
+        </div>
+      </button>
+    `;
+  }).join('');
+}
+
 // Initial Seed Data
 const DEFAULT_DATA = {
   activeMonthId: "2026-09",
@@ -546,55 +873,162 @@ function renderSummaryCards(activeMonth, daysInMonth, isActualCurrentMonth, curr
   return { monthProgressPct, earnedEffortPoints, totalAvailableEffortPoints, bestStreak, delta };
 }
 
-// 🌸 Bonsai Avatar Growth Engine
-function renderBonsai(pct, earnedPoints, activeMonth) {
-  const foliageGroup = document.getElementById('bonsai-foliage');
-  const stageTitle = document.getElementById('bonsai-stage-title');
-  const rankBadge = document.getElementById('bonsai-rank-badge');
-  const xpText = document.getElementById('bonsai-xp-text');
-  const progressText = document.getElementById('bonsai-progress-text');
-  const xpBar = document.getElementById('bonsai-xp-bar');
-  const growthQuote = document.getElementById('bonsai-growth-quote');
-  const bloomIndicator = document.getElementById('bonsai-bloom-indicator');
-
-  if (!foliageGroup) return;
-
-  const xp = Math.round(earnedPoints * 15);
-  xpText.textContent = `${xp} XP`;
-  progressText.textContent = `${pct}% Bloom`;
-  xpBar.style.width = `${Math.min(100, pct)}%`;
-
-  let rank = "Novice Sprout";
-  let quote = "Every small step brings branches closer to the spring sun.";
-  let stage = 1;
-
-  if (pct >= 75) {
-    stage = 4;
-    rank = "Sakura Sage ✨";
-    quote = "Radiant full bloom achieved! Your consistency shines brightly.";
-    bloomIndicator.textContent = "🌺✨";
-  } else if (pct >= 50) {
-    stage = 3;
-    rank = "Blossom Warrior 🌸";
-    quote = "Pink petals unfurl with every promise kept to yourself.";
-    bloomIndicator.textContent = "🌸";
-  } else if (pct >= 25) {
-    stage = 2;
-    rank = "Budding Apprentice 🌿";
-    quote = "Fresh spring buds awaken on patient branches.";
-    bloomIndicator.textContent = "🌿";
-  } else {
-    stage = 1;
-    rank = "Novice Sprout 🌱";
-    quote = "Quiet winter branches gather strength in the soil.";
-    bloomIndicator.textContent = "🌱";
+// 🌸 Procedural Companion SVG Graphics Engine for 7 Themes
+function generateCompanionSvg(themeId, stage, pct) {
+  if (themeId === 'matcha') {
+    let leavesSvg = '';
+    if (stage === 1) {
+      leavesSvg = `
+        <ellipse cx="40" cy="22" rx="4" ry="2" fill="#34d399" transform="rotate(-30 40 22)"/>
+        <ellipse cx="52" cy="14" rx="5" ry="2" fill="#34d399" transform="rotate(30 52 14)"/>
+      `;
+    } else if (stage === 2) {
+      leavesSvg = `
+        <ellipse cx="40" cy="22" rx="6" ry="2.5" fill="#34d399" transform="rotate(-35 40 22)"/>
+        <ellipse cx="52" cy="14" rx="7" ry="3" fill="#6ee7b7" transform="rotate(35 52 14)"/>
+        <ellipse cx="52" cy="24" rx="6" ry="2.5" fill="#10b981" transform="rotate(-25 52 24)"/>
+        <ellipse cx="64" cy="30" rx="5" ry="2.5" fill="#34d399" transform="rotate(40 64 30)"/>
+      `;
+    } else if (stage === 3) {
+      leavesSvg = `
+        <ellipse cx="38" cy="22" rx="8" ry="3.5" fill="#34d399" transform="rotate(-35 38 22)"/>
+        <ellipse cx="52" cy="14" rx="10" ry="4" fill="#6ee7b7" transform="rotate(35 52 14)"/>
+        <ellipse cx="52" cy="24" rx="8" ry="3" fill="#10b981" transform="rotate(-25 52 24)"/>
+        <ellipse cx="64" cy="30" rx="8" ry="3.5" fill="#34d399" transform="rotate(40 64 30)"/>
+        <ellipse cx="40" cy="40" rx="7" ry="3" fill="#34d399" transform="rotate(-40 40 40)"/>
+        <ellipse cx="64" cy="45" rx="7" ry="3" fill="#10b981" transform="rotate(30 64 45)"/>
+      `;
+    } else {
+      leavesSvg = `
+        <ellipse cx="38" cy="20" rx="10" ry="4" fill="#6ee7b7" transform="rotate(-35 38 20)"/>
+        <ellipse cx="52" cy="12" rx="12" ry="5" fill="#34d399" transform="rotate(35 52 12)"/>
+        <ellipse cx="52" cy="22" rx="10" ry="4" fill="#10b981" transform="rotate(-25 52 22)"/>
+        <ellipse cx="64" cy="28" rx="10" ry="4" fill="#6ee7b7" transform="rotate(40 64 28)"/>
+        <ellipse cx="40" cy="38" rx="9" ry="3.5" fill="#34d399" transform="rotate(-40 40 38)"/>
+        <ellipse cx="64" cy="42" rx="9" ry="3.5" fill="#10b981" transform="rotate(30 64 42)"/>
+        <circle cx="52" cy="12" r="2.5" fill="#fde047"/>
+      `;
+    }
+    return `
+      <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]">
+        <rect x="25" y="80" width="50" height="12" rx="4" fill="#0c2415" stroke="rgba(52,211,153,0.4)" stroke-width="2"/>
+        <path d="M40 80 L40 22" stroke="#10b981" stroke-width="4.5" stroke-linecap="round"/>
+        <path d="M52 80 L52 14" stroke="#34d399" stroke-width="5" stroke-linecap="round"/>
+        <path d="M64 80 L64 30" stroke="#059669" stroke-width="4" stroke-linecap="round"/>
+        <line x1="37" y1="60" x2="43" y2="60" stroke="#a7f3d0" stroke-width="2"/>
+        <line x1="37" y1="40" x2="43" y2="40" stroke="#a7f3d0" stroke-width="2"/>
+        <line x1="49" y1="62" x2="55" y2="62" stroke="#a7f3d0" stroke-width="2"/>
+        <line x1="49" y1="38" x2="55" y2="38" stroke="#a7f3d0" stroke-width="2"/>
+        <line x1="49" y1="20" x2="55" y2="20" stroke="#a7f3d0" stroke-width="2"/>
+        <line x1="61" y1="55" x2="67" y2="55" stroke="#a7f3d0" stroke-width="2"/>
+        ${leavesSvg}
+      </svg>
+    `;
   }
 
-  stageTitle.textContent = stage === 4 ? "Radiant Bloom 🌺" : stage === 3 ? "Half Bloom 🌸" : stage === 2 ? "Budding Sprout 🌿" : "Winter Branch 🌱";
-  rankBadge.textContent = rank;
-  growthQuote.textContent = `"${quote}"`;
+  if (themeId === 'celestial') {
+    const coreR = 12 + stage * 3;
+    return `
+      <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_0_10px_rgba(168,85,247,0.6)]">
+        <circle cx="20" cy="25" r="1.5" fill="#fff" opacity="0.8"/>
+        <circle cx="82" cy="20" r="1.2" fill="#38bdf8" opacity="0.9"/>
+        <circle cx="18" cy="75" r="1.2" fill="#c084fc" opacity="0.7"/>
+        <defs>
+          <radialGradient id="celestial-grad-${stage}" cx="40%" cy="40%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="45%" stop-color="#a855f7"/>
+            <stop offset="100%" stop-color="#38bdf8"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="50" cy="50" rx="38" ry="14" fill="none" stroke="rgba(56,189,248,0.7)" stroke-width="2" transform="rotate(-20 50 50)"/>
+        <circle cx="50" cy="50" r="${coreR}" fill="url(#celestial-grad-${stage})"/>
+        <circle cx="78" cy="40" r="${2 + stage * 0.8}" fill="#fde047" opacity="0.9"/>
+      </svg>
+    `;
+  }
 
-  // Draw procedural blossoms on the SVG Bonsai
+  if (themeId === 'cafe') {
+    let cafeLeaves = '';
+    if (stage === 1) {
+      cafeLeaves = `<ellipse cx="50" cy="25" rx="4" ry="2" fill="#34d399" transform="rotate(-20 50 25)"/>`;
+    } else if (stage === 2) {
+      cafeLeaves = `
+        <ellipse cx="46" cy="26" rx="6" ry="3" fill="#34d399" transform="rotate(-30 46 26)"/>
+        <ellipse cx="54" cy="22" rx="7" ry="3.5" fill="#10b981" transform="rotate(25 54 22)"/>
+      `;
+    } else if (stage === 3) {
+      cafeLeaves = `
+        <ellipse cx="44" cy="28" rx="8" ry="4" fill="#34d399" transform="rotate(-35 44 28)"/>
+        <ellipse cx="56" cy="22" rx="9" ry="4.5" fill="#10b981" transform="rotate(30 56 22)"/>
+        <ellipse cx="50" cy="15" rx="8" ry="4" fill="#6ee7b7" transform="rotate(-10 50 15)"/>
+      `;
+    } else {
+      cafeLeaves = `
+        <ellipse cx="42" cy="28" rx="10" ry="5" fill="#34d399" transform="rotate(-35 42 28)"/>
+        <ellipse cx="58" cy="22" rx="11" ry="5.5" fill="#10b981" transform="rotate(30 58 22)"/>
+        <ellipse cx="50" cy="14" rx="10" ry="5" fill="#6ee7b7" transform="rotate(-10 50 14)"/>
+        <circle cx="50" cy="14" r="2.5" fill="#f59e0b"/>
+      `;
+    }
+    return `
+      <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]">
+        <rect x="30" y="55" width="40" height="32" rx="8" fill="#78350f" stroke="#f59e0b" stroke-width="2"/>
+        <path d="M70 62 C78 62, 80 78, 70 78" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+        <path d="M50 55 Q48 40 50 25" fill="none" stroke="#15803d" stroke-width="3.5" stroke-linecap="round"/>
+        ${cafeLeaves}
+        <path d="M38 50 Q36 42 40 36" fill="none" stroke="rgba(254,215,170,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M62 50 Q64 42 60 36" fill="none" stroke="rgba(254,215,170,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    `;
+  }
+
+  if (themeId === 'cyberpunk') {
+    return `
+      <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_0_10px_rgba(0,243,255,0.7)]">
+        <polygon points="50,15 82,32 82,68 50,85 18,68 18,32" fill="#0d0d1f" stroke="#00f3ff" stroke-width="2.2"/>
+        <circle cx="50" cy="50" r="${10 + stage * 2.5}" fill="none" stroke="#ff007f" stroke-width="2"/>
+        <circle cx="50" cy="50" r="${4 + stage * 1.5}" fill="#00f3ff"/>
+        <line x1="50" y1="15" x2="50" y2="30" stroke="#00f3ff" stroke-width="1.5"/>
+        <line x1="50" y1="85" x2="50" y2="70" stroke="#00f3ff" stroke-width="1.5"/>
+        <line x1="18" y1="50" x2="32" y2="50" stroke="#ff007f" stroke-width="1.5"/>
+        <line x1="82" y1="50" x2="68" y2="50" stroke="#ff007f" stroke-width="1.5"/>
+      </svg>
+    `;
+  }
+
+  if (themeId === 'aurora') {
+    return `
+      <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_0_10px_rgba(56,189,248,0.7)]">
+        <polygon points="50,12 80,45 50,88 20,45" fill="#082f49" stroke="#38bdf8" stroke-width="2"/>
+        <polygon points="50,12 50,88 20,45" fill="rgba(52,211,153,0.3)"/>
+        <polygon points="50,12 80,45 50,88" fill="rgba(56,189,248,0.35)"/>
+        <circle cx="50" cy="45" r="${3 + stage * 2}" fill="#bae6fd"/>
+        <line x1="50" y1="${40 - stage * 4}" x2="50" y2="${50 + stage * 4}" stroke="#fff" stroke-width="1.5"/>
+        <line x1="${45 - stage * 4}" y1="45" x2="${55 + stage * 4}" y2="45" stroke="#fff" stroke-width="1.5"/>
+      </svg>
+    `;
+  }
+
+  if (themeId === 'sunset') {
+    return `
+      <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_0_8px_rgba(251,113,133,0.6)]">
+        <defs>
+          <linearGradient id="sunset-sun-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#fb7185"/>
+            <stop offset="100%" stop-color="#f59e0b"/>
+          </linearGradient>
+        </defs>
+        <circle cx="50" cy="38" r="20" fill="url(#sunset-sun-grad)"/>
+        <path d="M10 82 Q30 70 50 82 Q70 70 90 82 L90 90 L10 90 Z" fill="#7c2d12" stroke="#f59e0b" stroke-width="1.5"/>
+        <path d="M50 78 L50 42" stroke="#10b981" stroke-width="4.5" stroke-linecap="round"/>
+        <path d="M42 56 L42 48 Q42 56 50 56" stroke="#10b981" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M58 52 L58 44 Q58 52 50 52" stroke="#10b981" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle cx="50" cy="40" r="${1.5 + stage * 1.2}" fill="#fb7185"/>
+      </svg>
+    `;
+  }
+
+  // Default: Sakura Bonsai
   let blossomsSvg = '';
   if (stage === 1) {
     blossomsSvg = `
@@ -618,7 +1052,6 @@ function renderBonsai(pct, earnedPoints, activeMonth) {
       <circle cx="48" cy="15" r="2.5" fill="#fde047"/>
     `;
   } else {
-    // Full radiant bloom
     blossomsSvg = `
       <ellipse cx="26" cy="36" rx="12" ry="9" fill="#f472b6" opacity="0.95"/>
       <ellipse cx="50" cy="14" rx="16" ry="12" fill="#fb7185" opacity="0.95"/>
@@ -629,24 +1062,87 @@ function renderBonsai(pct, earnedPoints, activeMonth) {
       <circle cx="58" cy="24" r="2" fill="#fff" opacity="0.8"/>
     `;
   }
-  foliageGroup.innerHTML = blossomsSvg;
 
-  // Petal Shields Render
+  return `
+    <svg id="bonsai-svg" viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_0_8px_rgba(244,114,182,0.5)]">
+      <ellipse cx="50" cy="88" rx="28" ry="7" fill="#241434" stroke="rgba(244,114,182,0.4)" stroke-width="2"/>
+      <rect x="26" y="80" width="48" height="10" rx="3" fill="#1b0e28" stroke="rgba(244,114,182,0.3)" stroke-width="1.5"/>
+      <path d="M50 82 Q46 62 52 50 Q56 40 48 30 Q44 24 50 16" fill="none" stroke="#653528" stroke-width="6" stroke-linecap="round"/>
+      <path d="M49 52 Q34 46 28 40" fill="none" stroke="#653528" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M51 42 Q66 36 72 32" fill="none" stroke="#653528" stroke-width="3.5" stroke-linecap="round"/>
+      <g id="bonsai-foliage">${blossomsSvg}</g>
+    </svg>
+  `;
+}
+
+// 🌸 Avatar Growth Engine (Adapts to all 7 Themes)
+function renderBonsai(pct, earnedPoints, activeMonth) {
+  const container = document.getElementById('bonsai-tree-container');
+  const stageTitle = document.getElementById('bonsai-stage-title');
+  const rankBadge = document.getElementById('bonsai-rank-badge');
+  const xpText = document.getElementById('bonsai-xp-text');
+  const progressText = document.getElementById('bonsai-progress-text');
+  const xpBar = document.getElementById('bonsai-xp-bar');
+  const growthQuote = document.getElementById('bonsai-growth-quote');
+  const nextRank = document.getElementById('bonsai-next-rank');
+  const shieldsTitleLabel = document.getElementById('shields-title-label');
+  const shieldsStatusText = document.getElementById('shields-status-text');
+  const tokensContainer = document.getElementById('shield-tokens-container');
+
+  if (!container) return;
+
+  const theme = THEMES[currentThemeId] || THEMES.sakura;
+
+  const xp = Math.round(earnedPoints * 15);
+  if (xpText) xpText.textContent = `${xp} XP`;
+  if (progressText) progressText.textContent = `${pct}% Bloom`;
+  if (xpBar) {
+    xpBar.style.width = `${Math.min(100, pct)}%`;
+    xpBar.style.background = theme.accentGradient;
+  }
+
+  let stage = 1;
+  if (pct >= 75) stage = 4;
+  else if (pct >= 50) stage = 3;
+  else if (pct >= 25) stage = 2;
+  else stage = 1;
+
+  const stageIdx = stage - 1;
+  const stageName = theme.companionStages[stageIdx] || theme.companionStages[0];
+  const rankName = theme.companionRanks[stageIdx] || theme.companionRanks[0];
+  const quoteText = theme.companionQuotes[stageIdx] || theme.companionQuotes[0];
+  const bloomEmoji = theme.companionBloomIndicators[stageIdx] || '✨';
+
+  if (stageTitle) stageTitle.textContent = stageName;
+  if (rankBadge) rankBadge.textContent = rankName;
+  if (growthQuote) growthQuote.textContent = `"${quoteText}"`;
+  if (nextRank) nextRank.textContent = `Stage ${stage}/4`;
+
+  // Procedural SVG graphics
+  const svgMarkup = generateCompanionSvg(currentThemeId, stage, pct);
+  container.innerHTML = `
+    ${svgMarkup}
+    <div id="bonsai-bloom-indicator" class="absolute -top-1 -right-1 text-xs">${bloomEmoji}</div>
+  `;
+
+  // Rest Shields Render
+  if (shieldsTitleLabel) {
+    shieldsTitleLabel.textContent = `${theme.shieldName} 🛡️`;
+  }
+
   const shieldsUsed = activeMonth.shieldsUsed || {};
   const usedCount = Object.keys(shieldsUsed).length;
   const remaining = Math.max(0, 3 - usedCount);
 
-  const shieldsStatusText = document.getElementById('shields-status-text');
   if (shieldsStatusText) {
     shieldsStatusText.textContent = `${remaining} of 3 ready`;
   }
 
-  const tokensContainer = document.getElementById('shield-tokens-container');
   if (tokensContainer) {
     let tokensHtml = '';
     for (let i = 0; i < 3; i++) {
       if (i < remaining) {
-        tokensHtml += `<span class="w-7 h-7 rounded-xl bg-pink-500/20 border border-pink-400/30 flex items-center justify-center text-xs shadow-sm shadow-pink-500/20" title="Petal Shield Available">🌸</span>`;
+        tokensHtml += `<span class="w-7 h-7 rounded-xl bg-pink-500/20 border border-pink-400/30 flex items-center justify-center text-xs shadow-sm" title="${theme.shieldName} Available">${theme.shieldEmoji}</span>`;
       } else {
         tokensHtml += `<span class="w-7 h-7 rounded-xl bg-black/40 border border-pink-400/10 flex items-center justify-center text-xs opacity-40" title="Shield Used">🛡️</span>`;
       }
@@ -656,16 +1152,17 @@ function renderBonsai(pct, earnedPoints, activeMonth) {
 }
 
 window.celebrateBonsai = function() {
-  playTickSound(true);
+  if (window.playTickSound) playTickSound(true);
   fireGrandCelebration();
 };
 
 window.usePetalShieldToday = function() {
+  const theme = THEMES[currentThemeId] || THEMES.sakura;
   const { currentDay, currentMonth, currentYear } = getTodayInfo();
   const { year, month } = parseMonthId(state.activeMonthId);
 
   if (year !== currentYear || month !== currentMonth) {
-    alert("Please navigate to the current month to activate a rest shield.");
+    alert(`Please navigate to the current month to activate a ${theme.shieldName.slice(0, -1)}.`);
     return;
   }
 
@@ -673,7 +1170,7 @@ window.usePetalShieldToday = function() {
   if (!activeMonth.shieldsUsed) activeMonth.shieldsUsed = {};
 
   if (activeMonth.shieldsUsed[currentDay]) {
-    if (confirm("Remove today's Petal Shield?")) {
+    if (confirm(`Remove today's ${theme.shieldName.slice(0, -1)}?`)) {
       delete activeMonth.shieldsUsed[currentDay];
       saveState();
       renderApp();
@@ -683,14 +1180,14 @@ window.usePetalShieldToday = function() {
 
   const usedCount = Object.keys(activeMonth.shieldsUsed).length;
   if (usedCount >= 3) {
-    alert("You have used all 3 Petal Shields for this month! Cherish your rest and keep showing up.");
+    alert(`You have used all 3 ${theme.shieldName} for this month! Cherish your rest and keep showing up.`);
     return;
   }
 
-  if (confirm(`Activate a Petal Shield for today (Day ${currentDay})? This protects your streaks for all habits as a mindful Rest Day 🌸`)) {
+  if (confirm(`Activate a ${theme.shieldName.slice(0, -1)} for today (Day ${currentDay})? This protects your streaks for all habits as a mindful Rest Day ${theme.shieldEmoji}`)) {
     activeMonth.shieldsUsed[currentDay] = true;
-    playFanfareSound();
-    fireTileSparks();
+    if (typeof playFanfareSound === 'function') playFanfareSound();
+    if (typeof fireGrandCelebration === 'function') fireGrandCelebration();
     saveState();
     renderApp();
   }
@@ -1118,6 +1615,20 @@ document.addEventListener('DOMContentLoaded', () => {
       renderApp();
     }
   };
+
+  // Close Theme Dropdown on outside click
+  document.addEventListener('click', (e) => {
+    const wrapper = document.getElementById('theme-selector-wrapper');
+    const menu = document.getElementById('theme-dropdown-menu');
+    if (menu && !menu.classList.contains('hidden')) {
+      if (!wrapper || !wrapper.contains(e.target)) {
+        menu.classList.add('hidden');
+      }
+    }
+  });
+
+  // Apply Stored Theme on Startup
+  applyTheme(currentThemeId);
 
   // Initial App Render
   renderApp();

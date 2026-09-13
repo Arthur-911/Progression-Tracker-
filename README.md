@@ -59,9 +59,18 @@ Rest is part of the work. You receive **3 Petal Shields** every month:
 * Equipped with a Service Worker and web app manifest.
 * Open it in Chrome or iOS Safari and tap **"Add to Home Screen"** to run it fullscreen like a native app—no internet connection required.
 
-### 🎨 8. Sensory Zen Experience
-* Interactive fullscreen canvas rendering fluttering **3D sakura petals**.
-* Soothing Web Audio synthesizer chimes (gentle marimba chords) on task completions, paired with celebratory confetti cannons for big milestones.
+### 🎨 8. Dynamic 7-Theme Aesthetic Gallery
+Switch the entire vibe of the matrix at any time using the **Theme Gallery** in the top navigation bar. Every theme comes with a tailored color palette, glassmorphism styling, ambient canvas physics, evolving mascot companion, streak shields, and coach persona:
+
+| Theme | Aesthetic & Palette | Ambient Particle Canvas | Evolving Companion | Streak Rest Shields | Habit Coach Persona |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 🌸 **Sakura Zen** | Midnight plum & cherry blossom glass | 3D fluttering sakura petals | **Bonsai Tree** 🌸 | Petal Shields 🌸 | Sakura Sensei |
+| 🍵 **Matcha Garden** | Forest black & bamboo emerald | Drifting tea leaves & pulsing fireflies | **Bamboo Grove** 🎋 | Jade Stones 🍵 | Master Rin |
+| 🌌 **Celestial Nebula** | Deep space obsidian & pulsar violet | Twinkling stars & shooting stars | **Cosmic Core** 🪐 | Stasis Shields 🌌 | Astra |
+| ☕ **Rainy Lo-Fi Café** | Roasted espresso & warm honey amber | Raindrops sliding down glass window | **Café Houseplant** 🪴 | Rain Checks ☕ | Milo the Barista |
+| ⚡ **Cyberpunk Horizon** | Terminal dark & neon cyan/magenta | Digital matrix rain & cyber sparks | **Cyber Core** 🤖 | Firewall Shields ⚡ | NEXUS-9 |
+| ❄️ **Nordic Aurora** | Glacial navy, ice blue & aurora green | Translucent polar aurora & snowflakes | **Frost Totem** 🐺 | Glacier Wards ❄️ | Freja |
+| 🏜️ **Sunset Mirage** | Dusky terracotta & golden hour sand | Drifting golden sand & glowing embers | **Desert Oasis** 🌴 | Oasis Sanctuaries 🏜️ | Sol |
 
 ---
 

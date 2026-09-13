@@ -1,14 +1,16 @@
 /**
  * Footer Component (<app-footer>)
- * Blended Sakura Theme Footer
+ * Theme-Aware Footer with dynamic edition label & backup triggers
  */
 class AppFooter extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
       <footer class="mt-8 pt-4 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-pink-200/60">
         <div class="flex items-center gap-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse"></span>
-          <span>Tokyo Sakura Walkway Edition &bull; Auto-saved locally</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="footer-theme-edition">Sakura Zen Edition</span>
+          <span>&bull;</span>
+          <span>Auto-saved locally</span>
         </div>
         <div class="flex items-center gap-3">
           <button id="export-json-btn" class="hover:text-pink-300 transition flex items-center gap-1 font-semibold">

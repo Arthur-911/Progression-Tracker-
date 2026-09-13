@@ -1,11 +1,14 @@
-:root {
+:root, [data-theme="sakura"] {
   --bg-body: #0d0814;
-  --bg-surface: rgba(22, 14, 34, 0.68);
-  --bg-card: rgba(32, 18, 48, 0.58);
-  --border: rgba(244, 114, 182, 0.22);
-  --border-subtle: rgba(244, 114, 182, 0.1);
+  --bg-surface: rgba(22, 14, 34, 0.72);
+  --bg-card: rgba(32, 18, 48, 0.6);
+  --bg-sticky: rgba(22, 14, 34, 0.95);
+  --border: rgba(244, 114, 182, 0.24);
+  --border-subtle: rgba(244, 114, 182, 0.12);
   --text-main: #fff5f8;
   --text-muted: #d8b4e2;
+  --accent-primary: #f472b6;
+  --accent-secondary: #fb7185;
   --accent-pink: #f472b6;   /* Sakura Blossom Pink */
   --accent-rose: #fb7185;   /* Rose Petal */
   --accent-purple: #c084fc; /* Petal Lilac */
@@ -14,16 +17,194 @@
   --accent-amber: #fde047;  /* Lantern Glow */
   --today-col: rgba(244, 114, 182, 0.16);
   --today-border: rgba(244, 114, 182, 0.45);
-  --glow-sakura: 0 0 25px rgba(244, 114, 182, 0.35);
+  --glow-theme: 0 0 25px rgba(244, 114, 182, 0.35);
+  --scrollbar-thumb: rgba(244, 114, 182, 0.28);
+  --selection-bg: #f472b6;
+  --theme-gradient: linear-gradient(135deg, #f472b6, #fb7185);
+  --bg-gradient: 
+    radial-gradient(circle at 50% -10%, rgba(244, 114, 182, 0.22) 0%, transparent 60%),
+    linear-gradient(to bottom, rgba(16, 10, 26, 0.65) 0%, rgba(10, 6, 18, 0.82) 100%),
+    url('../assets/sakura-bg.jpg');
+}
+
+[data-theme="matcha"] {
+  --bg-body: #07130b;
+  --bg-surface: rgba(11, 26, 17, 0.75);
+  --bg-card: rgba(16, 36, 24, 0.65);
+  --bg-sticky: rgba(11, 26, 17, 0.96);
+  --border: rgba(52, 211, 153, 0.25);
+  --border-subtle: rgba(52, 211, 153, 0.12);
+  --text-main: #f0fdf4;
+  --text-muted: #a7f3d0;
+  --accent-primary: #10b981;
+  --accent-secondary: #34d399;
+  --accent-pink: #34d399;
+  --accent-rose: #059669;
+  --accent-purple: #6ee7b7;
+  --accent-teal: #10b981;
+  --accent-sky: #2dd4bf;
+  --accent-amber: #facc15;
+  --today-col: rgba(52, 211, 153, 0.16);
+  --today-border: rgba(52, 211, 153, 0.5);
+  --glow-theme: 0 0 25px rgba(16, 185, 129, 0.35);
+  --scrollbar-thumb: rgba(52, 211, 153, 0.28);
+  --selection-bg: #10b981;
+  --theme-gradient: linear-gradient(135deg, #10b981, #059669);
+  --bg-gradient: 
+    radial-gradient(circle at 50% -10%, rgba(16, 185, 129, 0.22) 0%, transparent 60%),
+    radial-gradient(circle at 80% 80%, rgba(52, 211, 153, 0.12) 0%, transparent 50%),
+    linear-gradient(to bottom, rgba(7, 19, 11, 0.8) 0%, rgba(4, 12, 7, 0.94) 100%);
+}
+
+[data-theme="celestial"] {
+  --bg-body: #060714;
+  --bg-surface: rgba(14, 16, 38, 0.75);
+  --bg-card: rgba(20, 24, 52, 0.65);
+  --bg-sticky: rgba(14, 16, 38, 0.96);
+  --border: rgba(168, 85, 247, 0.28);
+  --border-subtle: rgba(56, 189, 248, 0.15);
+  --text-main: #f5f3ff;
+  --text-muted: #c4b5fd;
+  --accent-primary: #a855f7;
+  --accent-secondary: #38bdf8;
+  --accent-pink: #a855f7;
+  --accent-rose: #818cf8;
+  --accent-purple: #c084fc;
+  --accent-teal: #22d3ee;
+  --accent-sky: #38bdf8;
+  --accent-amber: #fde047;
+  --today-col: rgba(168, 85, 247, 0.18);
+  --today-border: rgba(56, 189, 248, 0.5);
+  --glow-theme: 0 0 25px rgba(168, 85, 247, 0.38);
+  --scrollbar-thumb: rgba(168, 85, 247, 0.3);
+  --selection-bg: #a855f7;
+  --theme-gradient: linear-gradient(135deg, #a855f7, #38bdf8);
+  --bg-gradient: 
+    radial-gradient(circle at 50% -10%, rgba(168, 85, 247, 0.24) 0%, transparent 60%),
+    radial-gradient(circle at 80% 80%, rgba(56, 189, 248, 0.15) 0%, transparent 50%),
+    linear-gradient(to bottom, rgba(6, 7, 20, 0.8) 0%, rgba(3, 4, 12, 0.95) 100%);
+}
+
+[data-theme="cafe"] {
+  --bg-body: #130e0a;
+  --bg-surface: rgba(28, 20, 15, 0.78);
+  --bg-card: rgba(38, 27, 20, 0.68);
+  --bg-sticky: rgba(28, 20, 15, 0.96);
+  --border: rgba(245, 158, 11, 0.25);
+  --border-subtle: rgba(245, 158, 11, 0.12);
+  --text-main: #fffbeb;
+  --text-muted: #fed7aa;
+  --accent-primary: #f59e0b;
+  --accent-secondary: #fb923c;
+  --accent-pink: #f59e0b;
+  --accent-rose: #ea580c;
+  --accent-purple: #d97706;
+  --accent-teal: #84cc16;
+  --accent-sky: #38bdf8;
+  --accent-amber: #fde047;
+  --today-col: rgba(245, 158, 11, 0.18);
+  --today-border: rgba(245, 158, 11, 0.5);
+  --glow-theme: 0 0 25px rgba(245, 158, 11, 0.35);
+  --scrollbar-thumb: rgba(245, 158, 11, 0.3);
+  --selection-bg: #f59e0b;
+  --theme-gradient: linear-gradient(135deg, #f59e0b, #d97706);
+  --bg-gradient: 
+    radial-gradient(circle at 50% -10%, rgba(245, 158, 11, 0.2) 0%, transparent 60%),
+    radial-gradient(circle at 20% 80%, rgba(251, 146, 60, 0.12) 0%, transparent 50%),
+    linear-gradient(to bottom, rgba(19, 14, 10, 0.82) 0%, rgba(12, 8, 6, 0.95) 100%);
+}
+
+[data-theme="cyberpunk"] {
+  --bg-body: #07070f;
+  --bg-surface: rgba(13, 13, 24, 0.84);
+  --bg-card: rgba(19, 19, 36, 0.74);
+  --bg-sticky: rgba(13, 13, 24, 0.97);
+  --border: rgba(0, 243, 255, 0.3);
+  --border-subtle: rgba(255, 0, 127, 0.18);
+  --text-main: #f0fdfa;
+  --text-muted: #93c5fd;
+  --accent-primary: #00f3ff;
+  --accent-secondary: #ff007f;
+  --accent-pink: #00f3ff;
+  --accent-rose: #ff007f;
+  --accent-purple: #a855f7;
+  --accent-teal: #00ff66;
+  --accent-sky: #00f3ff;
+  --accent-amber: #ffe600;
+  --today-col: rgba(0, 243, 255, 0.18);
+  --today-border: rgba(0, 243, 255, 0.55);
+  --glow-theme: 0 0 25px rgba(0, 243, 255, 0.4);
+  --scrollbar-thumb: rgba(0, 243, 255, 0.35);
+  --selection-bg: #ff007f;
+  --theme-gradient: linear-gradient(135deg, #00f3ff, #ff007f);
+  --bg-gradient: 
+    radial-gradient(circle at 50% -10%, rgba(0, 243, 255, 0.22) 0%, transparent 60%),
+    radial-gradient(circle at 80% 80%, rgba(255, 0, 127, 0.18) 0%, transparent 50%),
+    linear-gradient(to bottom, rgba(7, 7, 15, 0.85) 0%, rgba(3, 3, 8, 0.96) 100%);
+}
+
+[data-theme="aurora"] {
+  --bg-body: #060e17;
+  --bg-surface: rgba(10, 22, 35, 0.75);
+  --bg-card: rgba(15, 31, 48, 0.65);
+  --bg-sticky: rgba(10, 22, 35, 0.96);
+  --border: rgba(56, 189, 248, 0.26);
+  --border-subtle: rgba(52, 211, 153, 0.15);
+  --text-main: #f0f9ff;
+  --text-muted: #bae6fd;
+  --accent-primary: #38bdf8;
+  --accent-secondary: #34d399;
+  --accent-pink: #38bdf8;
+  --accent-rose: #34d399;
+  --accent-purple: #818cf8;
+  --accent-teal: #2dd4bf;
+  --accent-sky: #38bdf8;
+  --accent-amber: #fde047;
+  --today-col: rgba(56, 189, 248, 0.18);
+  --today-border: rgba(56, 189, 248, 0.5);
+  --glow-theme: 0 0 25px rgba(56, 189, 248, 0.35);
+  --scrollbar-thumb: rgba(56, 189, 248, 0.3);
+  --selection-bg: #38bdf8;
+  --theme-gradient: linear-gradient(135deg, #38bdf8, #34d399);
+  --bg-gradient: 
+    radial-gradient(circle at 50% -10%, rgba(56, 189, 248, 0.22) 0%, transparent 60%),
+    radial-gradient(circle at 20% 70%, rgba(52, 211, 153, 0.16) 0%, transparent 50%),
+    linear-gradient(to bottom, rgba(6, 14, 23, 0.8) 0%, rgba(3, 8, 14, 0.95) 100%);
+}
+
+[data-theme="sunset"] {
+  --bg-body: #160e14;
+  --bg-surface: rgba(29, 17, 26, 0.75);
+  --bg-card: rgba(39, 24, 34, 0.65);
+  --bg-sticky: rgba(29, 17, 26, 0.96);
+  --border: rgba(251, 113, 133, 0.28);
+  --border-subtle: rgba(245, 158, 11, 0.15);
+  --text-main: #fff1f2;
+  --text-muted: #fecdd3;
+  --accent-primary: #fb7185;
+  --accent-secondary: #f59e0b;
+  --accent-pink: #fb7185;
+  --accent-rose: #f43f5e;
+  --accent-purple: #c084fc;
+  --accent-teal: #34d399;
+  --accent-sky: #fb923c;
+  --accent-amber: #f59e0b;
+  --today-col: rgba(251, 113, 133, 0.18);
+  --today-border: rgba(251, 113, 133, 0.5);
+  --glow-theme: 0 0 25px rgba(251, 113, 133, 0.35);
+  --scrollbar-thumb: rgba(251, 113, 133, 0.3);
+  --selection-bg: #fb7185;
+  --theme-gradient: linear-gradient(135deg, #fb7185, #f59e0b);
+  --bg-gradient: 
+    radial-gradient(circle at 50% -10%, rgba(251, 113, 133, 0.22) 0%, transparent 60%),
+    radial-gradient(circle at 80% 70%, rgba(245, 158, 11, 0.16) 0%, transparent 50%),
+    linear-gradient(to bottom, rgba(22, 14, 20, 0.82) 0%, rgba(13, 8, 12, 0.95) 100%);
 }
 
 body {
   font-family: 'Outfit', sans-serif;
   background-color: var(--bg-body) !important;
-  background-image: 
-    radial-gradient(circle at 50% -10%, rgba(244, 114, 182, 0.2) 0%, transparent 60%),
-    linear-gradient(to bottom, rgba(16, 10, 26, 0.62) 0%, rgba(10, 6, 18, 0.78) 100%),
-    url('../assets/sakura-bg.jpg') !important;
+  background-image: var(--bg-gradient) !important;
   background-size: cover !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
@@ -32,6 +213,12 @@ body {
   overflow-x: hidden;
   font-size: 13px;
   line-height: 1.4;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+::selection {
+  background: var(--selection-bg);
+  color: #ffffff;
 }
 
 .font-brand {
@@ -42,13 +229,14 @@ body {
   font-family: 'Space Mono', monospace;
 }
 
-/* Frosted Sakura Glassmorphism */
+/* Frosted Glassmorphism Cards */
 .theme-card {
   background: var(--bg-surface);
   backdrop-filter: blur(24px) saturate(160%);
   -webkit-backdrop-filter: blur(24px) saturate(160%);
   border: 1px solid var(--border);
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 220, 235, 0.15);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .theme-subcard {
@@ -56,6 +244,7 @@ body {
   border: 1px solid var(--border-subtle);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 /* Frosted Sticky Columns for Horizontal Table Scroll */
@@ -63,18 +252,20 @@ body {
   position: sticky;
   left: 0;
   z-index: 25;
-  background: rgba(22, 14, 34, 0.92);
+  background: var(--bg-sticky);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  transition: background 0.3s ease;
 }
 
 .sticky-col-2 {
   position: sticky;
   left: 190px;
   z-index: 25;
-  background: rgba(22, 14, 34, 0.92);
+  background: var(--bg-sticky);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  transition: background 0.3s ease;
 }
 
 /* Tactile Matrix Day Cell Button */
@@ -91,7 +282,7 @@ body {
   z-index: 10;
 }
 
-/* Slim Aesthetic Blossom Scrollbar */
+/* Slim Aesthetic Scrollbar */
 ::-webkit-scrollbar {
   height: 5px;
   width: 5px;
@@ -102,15 +293,15 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(244, 114, 182, 0.25);
+  background: var(--scrollbar-thumb);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(244, 114, 182, 0.45);
+  background: var(--accent-primary);
 }
 
-/* Fullscreen Transparent Sakura Canvas */
+/* Fullscreen Transparent Ambient Canvas */
 #sakura-canvas {
   position: fixed;
   inset: 0;
@@ -119,4 +310,59 @@ body {
   pointer-events: none;
   z-index: 0;
   background: transparent !important;
+}
+
+/* Adaptive styles for non-sakura themes to override hardcoded Tailwind pink utilities */
+[data-theme] .border-pink-400\/20,
+[data-theme] .border-pink-400\/25,
+[data-theme] .border-pink-400\/30,
+[data-theme] .border-pink-400\/35,
+[data-theme] .border-pink-400\/40 {
+  border-color: var(--border) !important;
+}
+
+[data-theme] .border-pink-400\/10,
+[data-theme] .border-pink-400\/15 {
+  border-color: var(--border-subtle) !important;
+}
+
+[data-theme] .text-pink-100 {
+  color: var(--text-main) !important;
+}
+
+[data-theme] .text-pink-200,
+[data-theme] .text-pink-200\/70,
+[data-theme] .text-pink-200\/80,
+[data-theme] .text-pink-200\/60,
+[data-theme] .text-pink-200\/40,
+[data-theme] .text-pink-200\/30,
+[data-theme] .text-pink-300 {
+  color: var(--text-muted) !important;
+}
+
+[data-theme] .bg-pink-500\/10,
+[data-theme] .bg-pink-500\/15,
+[data-theme] .bg-pink-500\/20,
+[data-theme] .bg-pink-500\/25,
+[data-theme] .bg-pink-500\/30 {
+  background-color: var(--today-col) !important;
+}
+
+[data-theme] .shadow-pink-500\/20,
+[data-theme] .shadow-pink-500\/25,
+[data-theme] .shadow-pink-500\/30 {
+  box-shadow: var(--glow-theme) !important;
+}
+
+/* Theme Option Item Styling */
+.theme-select-item {
+  transition: all 0.16s ease;
+}
+.theme-select-item:hover {
+  background: var(--today-col);
+  transform: translateX(2px);
+}
+.theme-select-item.active {
+  background: var(--today-col);
+  border-color: var(--accent-primary) !important;
 }

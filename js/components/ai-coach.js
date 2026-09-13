@@ -1,6 +1,6 @@
 /**
  * AI Coach Component (<app-ai-coach>)
- * Floating Sakura Sensei Zen Habit Coach & Advisor
+ * Floating Theme-Adaptive Habit Coach & Advisor (Sakura Sensei, Master Rin, Astra, Milo, NEXUS-9, Freja, Sol)
  */
 class AppAiCoach extends HTMLElement {
   connectedCallback() {
@@ -10,13 +10,13 @@ class AppAiCoach extends HTMLElement {
         <button 
           id="ai-coach-toggle-btn" 
           onclick="toggleAiCoach()"
-          title="Open Sakura Sensei (AI Habit Coach)"
+          title="Open AI Habit Coach"
           class="flex items-center gap-2 px-4 py-2.5 rounded-full shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 text-white font-bold text-xs border border-pink-400/40 relative group"
-          style="background: linear-gradient(135deg, rgba(244, 114, 182, 0.95), rgba(192, 132, 252, 0.95)); box-shadow: 0 10px 25px rgba(244, 114, 182, 0.4);"
+          style="background: var(--theme-gradient); box-shadow: var(--glow-theme);"
         >
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="text-base">🌸</span>
-          <span class="font-brand tracking-wide">Sakura Sensei</span>
+          <span class="text-base" id="ai-coach-launcher-icon">🌸</span>
+          <span class="font-brand tracking-wide" id="ai-coach-launcher-name">Sakura Sensei</span>
           <span class="text-[10px] bg-black/30 px-1.5 py-0.5 rounded-full border border-white/20 font-mono-num">AI</span>
         </button>
       </div>
@@ -28,18 +28,18 @@ class AppAiCoach extends HTMLElement {
           <!-- Drawer Top Header -->
           <div class="p-3.5 border-b border-pink-400/20 flex items-center justify-between bg-black/40">
             <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-pink-400 to-purple-400 p-0.5 shadow-md shadow-pink-500/30">
-                <div class="w-full h-full rounded-[10px] bg-[#120818] flex items-center justify-center text-sm">
+              <div class="w-8 h-8 rounded-xl p-0.5 shadow-md" style="background: var(--theme-gradient);">
+                <div class="w-full h-full rounded-[10px] bg-[#120818] flex items-center justify-center text-sm" id="ai-coach-drawer-avatar">
                   🌸
                 </div>
               </div>
               <div>
                 <div class="flex items-center gap-1.5">
-                  <h3 class="text-xs font-black text-white font-brand">Sakura Sensei</h3>
+                  <h3 class="text-xs font-black text-white font-brand" id="ai-coach-drawer-name">Sakura Sensei</h3>
                   <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                   <span class="text-[9px] text-emerald-300 font-mono-num font-bold">Online</span>
                 </div>
-                <p class="text-[10px] text-pink-200/60 font-medium">Zen Habit Coach & Rhythm Guide</p>
+                <p class="text-[10px] text-pink-200/60 font-medium" id="ai-coach-drawer-role">Zen Habit Coach & Rhythm Guide</p>
               </div>
             </div>
 
@@ -75,8 +75,8 @@ class AppAiCoach extends HTMLElement {
           <div id="ai-chat-messages" class="flex-1 overflow-y-auto p-3.5 space-y-3 text-xs">
             <!-- Initial Greeting -->
             <div class="flex items-start gap-2.5">
-              <div class="w-6 h-6 rounded-lg bg-pink-500/20 border border-pink-400/30 flex items-center justify-center text-xs flex-shrink-0">🌸</div>
-              <div class="p-3 rounded-2xl rounded-tl-none bg-pink-500/10 border border-pink-400/20 text-pink-100 leading-relaxed max-w-[85%]">
+              <div class="w-6 h-6 rounded-lg bg-pink-500/20 border border-pink-400/30 flex items-center justify-center text-xs flex-shrink-0" id="ai-coach-initial-icon">🌸</div>
+              <div class="p-3 rounded-2xl rounded-tl-none bg-pink-500/10 border border-pink-400/20 text-pink-100 leading-relaxed max-w-[85%]" id="ai-coach-initial-text">
                 Greetings! I am <strong>Sakura Sensei</strong>, your embedded Zen habit companion.
                 <br><br>
                 I continuously review your progression matrix, streaks, and time pacing. Tap any chip above or ask me anything to cultivate your daily cadence! 🍵
@@ -89,7 +89,7 @@ class AppAiCoach extends HTMLElement {
             <input 
               type="text" 
               id="ai-chat-input" 
-              placeholder="Ask Sensei for habit advice or tips..." 
+              placeholder="Ask your habit advisor for guidance..." 
               autocomplete="off"
               class="flex-1 bg-[#100718] border border-pink-400/25 rounded-xl px-3 py-2 text-xs text-white placeholder-pink-200/40 focus:outline-none focus:border-pink-400 font-medium"
             />
@@ -97,7 +97,7 @@ class AppAiCoach extends HTMLElement {
               type="submit" 
               id="ai-send-btn"
               class="px-3 py-2 rounded-xl text-white font-bold text-xs shadow-md transition hover:opacity-90 active:scale-95 flex items-center justify-center"
-              style="background: linear-gradient(135deg, var(--accent-pink), var(--accent-rose));"
+              style="background: var(--theme-gradient);"
             >
               <i data-lucide="send" class="w-3.5 h-3.5"></i>
             </button>
@@ -112,7 +112,7 @@ class AppAiCoach extends HTMLElement {
           <div class="flex items-center justify-between pb-2.5 border-b border-pink-400/20">
             <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
               <span>⚙️</span>
-              <span>Sakura Sensei Settings</span>
+              <span id="ai-settings-title">Habit Coach Settings</span>
             </h3>
             <button onclick="toggleAiSettingsModal()" class="text-pink-200/60 hover:text-white p-1 rounded-lg">
               <i data-lucide="x" class="w-4 h-4"></i>
@@ -121,7 +121,7 @@ class AppAiCoach extends HTMLElement {
 
           <div class="mt-3.5 space-y-3 text-xs">
             <p class="text-pink-200/80 leading-relaxed">
-              By default, Sakura Sensei runs on a <strong>fast, 100% offline Zen intelligence engine</strong> that knows your real matrix data without requiring any API keys.
+              By default, your AI Coach runs on a <strong>fast, 100% offline intelligence engine</strong> that calculates your real matrix rhythm without requiring any API key.
             </p>
             <div>
               <label class="block text-[10px] font-bold uppercase tracking-wider text-pink-300 mb-1">
@@ -140,7 +140,7 @@ class AppAiCoach extends HTMLElement {
 
             <div class="flex items-center justify-end gap-2 pt-2 border-t border-pink-400/20">
               <button type="button" onclick="clearAiApiKey()" class="text-[11px] font-bold text-rose-400 hover:text-rose-300 px-2 py-1">Clear Key</button>
-              <button type="button" onclick="saveAiApiKey()" class="px-4 py-1.5 rounded-xl font-bold text-xs text-white shadow-md transition" style="background: linear-gradient(135deg, var(--accent-pink), var(--accent-rose));">
+              <button type="button" onclick="saveAiApiKey()" class="px-4 py-1.5 rounded-xl font-bold text-xs text-white shadow-md transition" style="background: var(--theme-gradient);">
                 Save & Close
               </button>
             </div>
@@ -160,7 +160,7 @@ window.toggleAiCoach = function() {
   const isHidden = drawer.classList.contains('hidden');
   if (isHidden) {
     drawer.classList.remove('hidden');
-    playTickSound(true);
+    if (window.playTickSound) playTickSound(true);
     setTimeout(() => {
       const input = document.getElementById('ai-chat-input');
       if (input) input.focus();
@@ -186,12 +186,16 @@ window.handleSendAiMessage = async function(e) {
   const prompt = (input.value || '').trim();
   if (!prompt) return;
 
+  const currentTheme = (typeof window.getCurrentThemeData === 'function') 
+    ? window.getCurrentThemeData() 
+    : { icon: '🌸', coachName: 'Sakura Sensei' };
+
   // Append User Message
   input.value = '';
   const userMsgDiv = document.createElement('div');
   userMsgDiv.className = "flex items-start justify-end gap-2";
   userMsgDiv.innerHTML = `
-    <div class="p-3 rounded-2xl rounded-tr-none bg-gradient-to-r from-pink-500 to-rose-500 text-white font-medium text-xs leading-relaxed max-w-[85%] shadow-md">
+    <div class="p-3 rounded-2xl rounded-tr-none text-white font-medium text-xs leading-relaxed max-w-[85%] shadow-md" style="background: var(--theme-gradient);">
       ${escapeHtml(prompt)}
     </div>
   `;
@@ -202,10 +206,10 @@ window.handleSendAiMessage = async function(e) {
   typingDiv.className = "flex items-start gap-2.5";
   typingDiv.id = "ai-typing-indicator";
   typingDiv.innerHTML = `
-    <div class="w-6 h-6 rounded-lg bg-pink-500/20 border border-pink-400/30 flex items-center justify-center text-xs flex-shrink-0">🌸</div>
+    <div class="w-6 h-6 rounded-lg bg-pink-500/20 border border-pink-400/30 flex items-center justify-center text-xs flex-shrink-0">${currentTheme.icon}</div>
     <div class="p-2.5 rounded-2xl rounded-tl-none bg-pink-500/10 border border-pink-400/20 text-pink-200/70 text-xs italic flex items-center gap-1.5">
       <span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-ping"></span>
-      <span>Sensei is analyzing your rhythm...</span>
+      <span>${currentTheme.coachName} is analyzing your rhythm...</span>
     </div>
   `;
   messagesContainer.appendChild(typingDiv);
@@ -218,19 +222,19 @@ window.handleSendAiMessage = async function(e) {
   const typingElem = document.getElementById('ai-typing-indicator');
   if (typingElem) typingElem.remove();
 
-  // Append Sensei Response
-  const senseiMsgDiv = document.createElement('div');
-  senseiMsgDiv.className = "flex items-start gap-2.5";
-  senseiMsgDiv.innerHTML = `
-    <div class="w-6 h-6 rounded-lg bg-pink-500/20 border border-pink-400/30 flex items-center justify-center text-xs flex-shrink-0">🌸</div>
+  // Append Coach Response
+  const coachMsgDiv = document.createElement('div');
+  coachMsgDiv.className = "flex items-start gap-2.5";
+  coachMsgDiv.innerHTML = `
+    <div class="w-6 h-6 rounded-lg bg-pink-500/20 border border-pink-400/30 flex items-center justify-center text-xs flex-shrink-0">${currentTheme.icon}</div>
     <div class="p-3 rounded-2xl rounded-tl-none bg-pink-500/10 border border-pink-400/20 text-pink-100 leading-relaxed max-w-[85%]">
       ${formatAiMarkdown(reply)}
     </div>
   `;
-  messagesContainer.appendChild(senseiMsgDiv);
+  messagesContainer.appendChild(coachMsgDiv);
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-  playTickSound(true);
+  if (window.playTickSound) playTickSound(true);
 };
 
 window.toggleAiSettingsModal = function() {
@@ -250,7 +254,7 @@ window.saveAiApiKey = function() {
   const key = document.getElementById('gemini-api-key-input').value.trim();
   if (key) {
     localStorage.setItem('sakura_gemini_api_key', key);
-    alert("Gemini API Key saved! Sakura Sensei is now powered by live Gemini AI. 🌸✨");
+    alert("Gemini API Key saved! Your habit coach is now powered by live Gemini AI. ✨");
   } else {
     localStorage.removeItem('sakura_gemini_api_key');
   }
@@ -260,7 +264,7 @@ window.saveAiApiKey = function() {
 window.clearAiApiKey = function() {
   localStorage.removeItem('sakura_gemini_api_key');
   document.getElementById('gemini-api-key-input').value = '';
-  alert("API key removed. Sakura Sensei will use the built-in offline Zen engine.");
+  alert("API key removed. Your coach will use the built-in offline intelligence engine.");
   toggleAiSettingsModal();
 };
 
