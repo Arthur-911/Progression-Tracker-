@@ -435,7 +435,9 @@
 
   initParticles(currentTheme);
 
+  let isAnimating = true;
   function animate() {
+    if (!isAnimating) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (currentTheme === 'aurora') {
@@ -460,6 +462,15 @@
     requestAnimationFrame(animate);
   }
   animate();
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      isAnimating = false;
+    } else if (!isAnimating) {
+      isAnimating = true;
+      requestAnimationFrame(animate);
+    }
+  });
 
   window.setAmbientTheme = function(newTheme) {
     currentTheme = newTheme;

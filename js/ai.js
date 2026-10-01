@@ -14,7 +14,7 @@ function buildMatrixContext() {
   if (!month) return null;
 
   const { year, month: mNum } = parseMonthId(state.activeMonthId);
-  const daysInMonth = getDaysInMonth(year, month);
+  const daysInMonth = getDaysInMonth(year, mNum);
   const { currentDay, currentMonth, currentYear } = getTodayInfo();
   const isActualCurrentMonth = (year === currentYear && mNum === currentMonth);
   const goals = month.goals || [];
@@ -32,7 +32,9 @@ function buildMatrixContext() {
     for (let d = 1; d <= daysInMonth; d++) {
       if ((g.checks && g.checks[d]) || shieldsUsed[d]) checkedCount++;
     }
-    const streak = calculateStreak(g, daysInMonth, isActualCurrentMonth, currentDay, shieldsUsed);
+    const streak = (typeof calculateLongestStreak === 'function')
+      ? calculateLongestStreak(g, daysInMonth, shieldsUsed)
+      : calculateStreak(g, daysInMonth, isActualCurrentMonth, currentDay, shieldsUsed);
     if (streak > bestStreak) bestStreak = streak;
     if (checkedCount > maxChecked) {
       maxChecked = checkedCount;
@@ -43,7 +45,7 @@ function buildMatrixContext() {
     totalAvailableEffort += g.effort || 1;
     earnedEffort += ratio * (g.effort || 1);
 
-    const doneToday = isActualCurrentMonth && g.checks && g.checks[currentDay];
+    const doneToday = isActualCurrentMonth && ((g.checks && g.checks[currentDay]) || shieldsUsed[currentDay]);
     if (doneToday) todayDone++;
 
     return {
@@ -54,7 +56,7 @@ function buildMatrixContext() {
       target: g.targetDays || daysInMonth,
       completedDays: checkedCount,
       streak,
-      doneToday
+      doneToday: !!doneToday
     };
   });
 
@@ -62,7 +64,12 @@ function buildMatrixContext() {
     ? Math.round((earnedEffort / totalAvailableEffort) * 100) 
     : 0;
 
-  const elapsedDays = isActualCurrentMonth ? currentDay : (year < new Date().getFullYear() ? daysInMonth : 0);
+  let elapsedDays = 0;
+  if (isActualCurrentMonth) {
+    elapsedDays = currentDay;
+  } else if (year < currentYear || (year === currentYear && mNum < currentMonth)) {
+    elapsedDays = daysInMonth;
+  }
   const expectedPct = Math.round((elapsedDays / daysInMonth) * 100);
   const delta = monthProgressPct - expectedPct;
 
@@ -209,12 +216,18 @@ User's Real-time Matrix Data:
 - MVP Habit: ${ctx.mvpHabit}
 - Active Habits: ${JSON.stringify(ctx.habits)}`;
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-goog-api-key': apiKey
+      },
       body: JSON.stringify({
+        system_instruction: {
+          parts: [{ text: systemPrompt }]
+        },
         contents: [
-          { role: 'user', parts: [{ text: `${systemPrompt}\n\nUser asks: "${prompt}"` }] }
+          { role: 'user', parts: [{ text: prompt }] }
         ]
       })
     });

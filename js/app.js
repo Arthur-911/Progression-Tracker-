@@ -3,6 +3,17 @@
  * Sakura Edition with Zen Bonsai, Micro-Notes, Petal Shields & Monthly Wrapped
  */
 
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+window.escapeHtml = escapeHtml;
+
 // Life Pillars Configuration
 const PILLARS = [
   { id: 'health', name: 'Health', emoji: '🌱', badge: 'border-emerald-400/30 bg-emerald-400/10 text-emerald-300', checkGradient: 'from-emerald-400 to-teal-400' },
@@ -339,69 +350,77 @@ function renderThemeMenuList() {
   }).join('');
 }
 
-// Initial Seed Data
-const DEFAULT_DATA = {
-  activeMonthId: "2026-09",
-  months: {
-    "2026-09": {
-      id: "2026-09",
-      title: "September 2026",
-      shieldsUsed: {},
-      goals: [
-        {
-          id: "g1",
-          title: "Morning Yoga / Cardio",
-          pillarId: "health",
-          timeOfDay: "morning",
-          effort: 4,
-          targetDays: 20,
-          checks: { 1: true },
-          notes: { 1: { mood: "🌸", text: "Felt rejuvenated and focused!" } }
-        },
-        {
-          id: "g2",
-          title: "Deep Work (2h Focus)",
-          pillarId: "career",
-          timeOfDay: "afternoon",
-          effort: 5,
-          targetDays: 22,
-          checks: { 1: true },
-          notes: {}
-        },
-        {
-          id: "g3",
-          title: "Read 20 Pages of Book",
-          pillarId: "learning",
-          timeOfDay: "evening",
-          effort: 2,
-          targetDays: 26,
-          checks: { 1: true },
-          notes: {}
-        },
-        {
-          id: "g4",
-          title: "Track Expenses & Cashflow",
-          pillarId: "finance",
-          timeOfDay: "evening",
-          effort: 1,
-          targetDays: 30,
-          checks: { 1: false },
-          notes: {}
-        },
-        {
-          id: "g5",
-          title: "10 Min Meditation & Journal",
-          pillarId: "personal",
-          timeOfDay: "morning",
-          effort: 2,
-          targetDays: 30,
-          checks: { 1: true },
-          notes: {}
-        }
-      ]
+// Initial Seed Data Generator (Dynamic to current month)
+function getInitialDefaultData() {
+  const now = new Date();
+  const currentMonthId = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const currentMonthTitle = now.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+  return {
+    activeMonthId: currentMonthId,
+    months: {
+      [currentMonthId]: {
+        id: currentMonthId,
+        title: currentMonthTitle,
+        shieldsUsed: {},
+        goals: [
+          {
+            id: "g1",
+            title: "Morning Yoga / Cardio",
+            pillarId: "health",
+            timeOfDay: "morning",
+            effort: 4,
+            targetDays: 20,
+            checks: { 1: true },
+            notes: { 1: { mood: "🌸", text: "Felt rejuvenated and focused!" } }
+          },
+          {
+            id: "g2",
+            title: "Deep Work (2h Focus)",
+            pillarId: "career",
+            timeOfDay: "afternoon",
+            effort: 5,
+            targetDays: 22,
+            checks: { 1: true },
+            notes: {}
+          },
+          {
+            id: "g3",
+            title: "Read 20 Pages of Book",
+            pillarId: "learning",
+            timeOfDay: "evening",
+            effort: 2,
+            targetDays: 26,
+            checks: { 1: true },
+            notes: {}
+          },
+          {
+            id: "g4",
+            title: "Track Expenses & Cashflow",
+            pillarId: "finance",
+            timeOfDay: "evening",
+            effort: 1,
+            targetDays: 30,
+            checks: {},
+            notes: {}
+          },
+          {
+            id: "g5",
+            title: "10 Min Meditation & Journal",
+            pillarId: "personal",
+            timeOfDay: "morning",
+            effort: 2,
+            targetDays: 30,
+            checks: { 1: true },
+            notes: {}
+          }
+        ]
+      }
     }
-  }
-};
+  };
+}
+
+const DEFAULT_DATA = getInitialDefaultData();
 
 let state = loadState();
 let currentPillarFilter = 'all';
@@ -413,7 +432,12 @@ let activeNoteTarget = null; // { goalId, day }
 function loadState() {
   try {
     const saved = localStorage.getItem('monthly_sakura_all_features_state');
-    if (saved) return JSON.parse(saved);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && parsed.months && typeof parsed.months === 'object') {
+        return parsed;
+      }
+    }
   } catch (e) {
     console.error("Failed to load local state:", e);
   }
@@ -430,8 +454,12 @@ function saveState() {
 
 // Date Helpers
 function parseMonthId(id) {
+  if (!id || typeof id !== 'string') {
+    const now = new Date();
+    return { year: now.getFullYear(), month: now.getMonth() + 1 };
+  }
   const [year, month] = id.split('-').map(Number);
-  return { year, month };
+  return { year: year || new Date().getFullYear(), month: month || (new Date().getMonth() + 1) };
 }
 
 function formatMonthTitle(id) {
@@ -473,6 +501,7 @@ function getTodayInfo() {
   return { currentYear, currentMonth, currentDay, now };
 }
 
+// Trailing streak ending today (or last day of month)
 function calculateStreak(goal, daysInMonth, isActualCurrentMonth, currentDay, shieldsUsed = {}) {
   const checks = goal.checks || {};
   let maxDay = isActualCurrentMonth ? currentDay : daysInMonth;
@@ -487,6 +516,25 @@ function calculateStreak(goal, daysInMonth, isActualCurrentMonth, currentDay, sh
   }
   return streak;
 }
+
+// Maximum consecutive unbroken streak anywhere in the month
+function calculateLongestStreak(goal, daysInMonth, shieldsUsed = {}) {
+  const checks = goal.checks || {};
+  let maxStreak = 0;
+  let currentRun = 0;
+  for (let d = 1; d <= daysInMonth; d++) {
+    if (checks[d] || shieldsUsed[d]) {
+      currentRun++;
+      if (currentRun > maxStreak) maxStreak = currentRun;
+    } else {
+      currentRun = 0;
+    }
+  }
+  return maxStreak;
+}
+
+window.calculateStreak = calculateStreak;
+window.calculateLongestStreak = calculateLongestStreak;
 
 // Main Render Loop
 function renderApp() {
@@ -662,12 +710,15 @@ function renderTable(activeMonth, goals, daysInMonth, isActualCurrentMonth, curr
 
     const todEmoji = goal.timeOfDay === 'morning' ? '🌅' : goal.timeOfDay === 'afternoon' ? '☀️' : goal.timeOfDay === 'evening' ? '🌙' : '';
 
+    const safeGoalId = escapeHtml(goal.id);
+    const safeGoalTitle = escapeHtml(goal.title);
+
     let rowHtml = `
       <td class="sticky-col-1 py-2.5 px-3 border-r border-[var(--border)] z-20 shadow-[2px_0_8px_rgba(0,0,0,0.4)]">
         <div class="flex items-center justify-between gap-1.5">
-          <div class="font-semibold truncate text-xs text-white flex items-center gap-1" title="${goal.title}">
+          <div class="font-semibold truncate text-xs text-white flex items-center gap-1" title="${safeGoalTitle}">
             ${todEmoji ? `<span class="text-[10px]">${todEmoji}</span>` : ''}
-            <span>${goal.title}</span>
+            <span>${safeGoalTitle}</span>
           </div>
           ${streak > 1 ? `<span class="flex items-center gap-0.5 text-[9px] font-bold text-amber-300 bg-amber-400/15 px-1 py-0.5 rounded-full border border-amber-400/25 font-mono-num">🔥${streak}d</span>` : ''}
         </div>
@@ -693,18 +744,21 @@ function renderTable(activeMonth, goals, daysInMonth, isActualCurrentMonth, curr
       const isToday = isActualCurrentMonth && (day === currentDay);
       const note = notes[day];
 
-      const cellTitle = isShielded 
+      const rawCellTitle = isShielded 
         ? `Day ${day}: Rest Day (Shielded)`
-        : (note ? `Day ${day} [${note.mood}]: ${note.text}` : `Day ${day}: ${isChecked ? 'Completed' : 'Click to complete'}`);
+        : (note ? `Day ${day} [${note.mood || '🌸'}]: ${note.text || ''}` : `Day ${day}: ${isChecked ? 'Completed' : 'Click to complete'}`);
+      const safeCellTitle = escapeHtml(rawCellTitle);
+      const safeNoteText = note ? escapeHtml(`Note: ${note.mood || ''} ${note.text || ''}`) : '';
 
       rowHtml += `
         <td class="py-1.5 px-0.5 text-center border-r border-[var(--border-subtle)] ${isToday ? 'border-x border-pink-400/40' : ''}" style="${isToday ? 'background: var(--today-col);' : ''}">
           <div class="relative inline-block">
             <button 
               type="button" 
-              onclick="toggleCheck('${goal.id}', ${day}, event)"
-              oncontextmenu="event.preventDefault(); openNoteModal('${goal.id}', ${day});"
-              title="${cellTitle}"
+              onclick="toggleCheck('${safeGoalId}', ${day}, event)"
+              oncontextmenu="event.preventDefault(); openNoteModal('${safeGoalId}', ${day});"
+              title="${safeCellTitle}"
+              aria-label="${safeCellTitle}"
               class="matrix-cell-btn w-6 h-6 mx-auto rounded-md flex items-center justify-center font-bold text-slate-950 shadow-sm relative ${
                 isShielded
                   ? 'bg-amber-400/80 border border-amber-300 scale-95'
@@ -715,7 +769,7 @@ function renderTable(activeMonth, goals, daysInMonth, isActualCurrentMonth, curr
             >
               ${isShielded ? '<span class="text-[10px]">🛡️</span>' : `<i data-lucide="check" class="w-3.5 h-3.5 stroke-[3] ${isChecked ? 'opacity-100 text-slate-950' : 'opacity-0'}"></i>`}
             </button>
-            ${note ? `<span class="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-pink-400 ring-1 ring-black shadow-sm" title="Note: ${note.mood} ${note.text}"></span>` : ''}
+            ${note ? `<span class="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-pink-400 ring-1 ring-black shadow-sm" title="${safeNoteText}"></span>` : ''}
           </div>
         </td>
       `;
@@ -736,7 +790,7 @@ function renderTable(activeMonth, goals, daysInMonth, isActualCurrentMonth, curr
         </div>
       </td>
       <td class="py-2.5 px-2 text-center border-l border-[var(--border)]">
-        <button onclick="deleteGoal('${goal.id}')" title="Delete Habit" class="text-pink-300/40 hover:text-rose-400 p-0.5 rounded transition opacity-50 group-hover:opacity-100">
+        <button onclick="deleteGoal('${safeGoalId}')" title="Delete Habit" aria-label="Delete Habit" class="text-pink-300/40 hover:text-rose-400 p-0.5 rounded transition opacity-50 group-hover:opacity-100">
           <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
         </button>
       </td>
@@ -810,7 +864,7 @@ function renderSummaryCards(activeMonth, daysInMonth, isActualCurrentMonth, curr
     totalTicks += checksCount;
     targetTicks += target;
 
-    const s = calculateStreak(g, daysInMonth, isActualCurrentMonth, currentDay, shieldsUsed);
+    const s = calculateLongestStreak(g, daysInMonth, shieldsUsed);
     if (s > bestStreak) bestStreak = s;
   });
 
@@ -827,11 +881,13 @@ function renderSummaryCards(activeMonth, daysInMonth, isActualCurrentMonth, curr
   let todayTotal = allGoals.length;
   if (isActualCurrentMonth && todayTotal > 0) {
     allGoals.forEach(g => {
-      if (g.checks && g.checks[currentDay]) todayDone++;
+      if ((g.checks && g.checks[currentDay]) || shieldsUsed[currentDay]) todayDone++;
     });
     const todayPct = Math.round((todayDone / todayTotal) * 100);
     document.getElementById('stat-today-percentage').textContent = `${todayPct}%`;
-    document.getElementById('stat-today-ratio').textContent = `${todayDone} of ${todayTotal}`;
+    document.getElementById('stat-today-ratio').textContent = shieldsUsed[currentDay] 
+      ? `Rest Day 🛡️` 
+      : `${todayDone} of ${todayTotal}`;
     document.getElementById('stat-today-date-text').textContent = `Day ${currentDay} of ${daysInMonth}`;
   } else {
     document.getElementById('stat-today-percentage').textContent = `--`;
@@ -839,7 +895,14 @@ function renderSummaryCards(activeMonth, daysInMonth, isActualCurrentMonth, curr
     document.getElementById('stat-today-date-text').textContent = `Pick current month`;
   }
 
-  let elapsedDays = isActualCurrentMonth ? currentDay : (parseMonthId(state.activeMonthId).year < new Date().getFullYear() ? daysInMonth : 0);
+  const { year: activeYear, month: activeMonthNum } = parseMonthId(state.activeMonthId);
+  const { currentYear, currentMonth } = getTodayInfo();
+  let elapsedDays = 0;
+  if (isActualCurrentMonth) {
+    elapsedDays = currentDay;
+  } else if (activeYear < currentYear || (activeYear === currentYear && activeMonthNum < currentMonth)) {
+    elapsedDays = daysInMonth;
+  }
   let expectedPct = Math.round((elapsedDays / daysInMonth) * 100);
   let delta = monthProgressPct - expectedPct;
 
@@ -1206,19 +1269,26 @@ function renderBriefing(activeMonth, daysInMonth, isActualCurrentMonth, currentD
   briefingBadge.textContent = timeName;
 
   if (isActualCurrentMonth && allGoals.length > 0) {
+    const isTodayShielded = !!activeMonth.shieldsUsed && !!activeMonth.shieldsUsed[currentDay];
+    if (isTodayShielded) {
+      briefingMsg.textContent = "🛡️ Rest Day active! Streaks for all habits are peacefully protected today.";
+      chipsContainer.innerHTML = '';
+      return;
+    }
+
     const uncompletedToday = allGoals.filter(g => !g.checks || !g.checks[currentDay]);
     if (uncompletedToday.length === 0) {
       briefingMsg.textContent = "🌸 All habits completed for today! Your bonsai is in full serene bloom.";
+      chipsContainer.innerHTML = '';
     } else {
-      briefingMsg.textContent = `${uncompletedToday.length} habits remaining today. Tap to check off or type below:`;
+      briefingMsg.textContent = `${uncompletedToday.length} habit${uncompletedToday.length > 1 ? 's' : ''} remaining today. Tap to check off or type below:`;
+      // Populate interactive quick-tap chips safely escaped
+      chipsContainer.innerHTML = uncompletedToday.slice(0, 3).map(g => `
+        <button onclick="toggleCheck('${escapeHtml(g.id)}', ${currentDay}, event)" class="px-2 py-1 rounded-lg border border-pink-400/25 bg-pink-500/10 hover:bg-pink-500/25 text-[10px] font-bold text-pink-200 transition flex items-center gap-1 whitespace-nowrap shadow-sm">
+          <span>+</span> <span>${escapeHtml(g.title.split(' ')[0])}</span>
+        </button>
+      `).join('');
     }
-
-    // Populate interactive quick-tap chips
-    chipsContainer.innerHTML = uncompletedToday.slice(0, 3).map(g => `
-      <button onclick="toggleCheck('${g.id}', ${currentDay}, event)" class="px-2 py-1 rounded-lg border border-pink-400/25 bg-pink-500/10 hover:bg-pink-500/25 text-[10px] font-bold text-pink-200 transition flex items-center gap-1 whitespace-nowrap shadow-sm">
-        <span>+</span> <span>${g.title.split(' ')[0]}</span>
-      </button>
-    `).join('');
   } else {
     briefingMsg.textContent = "Browse your historical rhythms or add new habits to cultivate your progression.";
     chipsContainer.innerHTML = '';
@@ -1372,7 +1442,7 @@ window.openWrappedModal = function() {
     totalAvailableEffortPoints += effort;
     earnedEffortPoints += ratio * effort;
 
-    const s = calculateStreak(g, daysInMonth, false, daysInMonth, shieldsUsed);
+    const s = calculateLongestStreak(g, daysInMonth, shieldsUsed);
     if (s > bestStreak) bestStreak = s;
   });
 
@@ -1586,6 +1656,77 @@ document.addEventListener('DOMContentLoaded', () => {
     URL.revokeObjectURL(url);
   };
 
+  function sanitizeImportedData(data) {
+    if (!data || typeof data !== 'object' || !data.months || typeof data.months !== 'object') {
+      throw new Error('Invalid backup structure');
+    }
+
+    const validPillars = ['health', 'career', 'learning', 'finance', 'personal'];
+    const validTimes = ['morning', 'afternoon', 'evening', 'any'];
+
+    const sanitizedMonths = {};
+    for (const [mId, mObj] of Object.entries(data.months)) {
+      if (!mObj || typeof mObj !== 'object') continue;
+      const cleanId = String(mObj.id || mId).trim().slice(0, 10);
+      const cleanTitle = String(mObj.title || cleanId).trim().slice(0, 60);
+      const shieldsUsed = {};
+      if (mObj.shieldsUsed && typeof mObj.shieldsUsed === 'object') {
+        for (const [dStr, val] of Object.entries(mObj.shieldsUsed)) {
+          const d = parseInt(dStr, 10);
+          if (d >= 1 && d <= 31 && val) shieldsUsed[d] = true;
+        }
+      }
+      const cleanGoals = [];
+      if (Array.isArray(mObj.goals)) {
+        mObj.goals.forEach((g, idx) => {
+          if (!g || typeof g !== 'object') return;
+          const id = String(g.id || 'g-' + idx).replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 32);
+          const title = String(g.title || 'Habit').trim().slice(0, 100);
+          const pillarId = validPillars.includes(g.pillarId) ? g.pillarId : 'health';
+          const timeOfDay = validTimes.includes(g.timeOfDay) ? g.timeOfDay : 'any';
+          const effort = Math.max(1, Math.min(5, parseInt(g.effort, 10) || 1));
+          const targetDays = Math.max(1, Math.min(31, parseInt(g.targetDays, 10) || 30));
+          const checks = {};
+          if (g.checks && typeof g.checks === 'object') {
+            for (const [dStr, val] of Object.entries(g.checks)) {
+              const d = parseInt(dStr, 10);
+              if (d >= 1 && d <= 31 && val) checks[d] = true;
+            }
+          }
+          const notes = {};
+          if (g.notes && typeof g.notes === 'object') {
+            for (const [dStr, n] of Object.entries(g.notes)) {
+              const d = parseInt(dStr, 10);
+              if (d >= 1 && d <= 31 && n && typeof n === 'object') {
+                notes[d] = {
+                  mood: String(n.mood || '🌸').slice(0, 6),
+                  text: String(n.text || '').trim().slice(0, 300)
+                };
+              }
+            }
+          }
+          cleanGoals.push({ id, title, pillarId, timeOfDay, effort, targetDays, checks, notes });
+        });
+      }
+      sanitizedMonths[cleanId] = {
+        id: cleanId,
+        title: cleanTitle,
+        shieldsUsed,
+        goals: cleanGoals
+      };
+    }
+
+    if (Object.keys(sanitizedMonths).length === 0) {
+      throw new Error('No valid months found');
+    }
+
+    const activeMonthId = (typeof data.activeMonthId === 'string' && sanitizedMonths[data.activeMonthId])
+      ? data.activeMonthId
+      : Object.keys(sanitizedMonths)[0];
+
+    return { activeMonthId, months: sanitizedMonths };
+  }
+
   document.getElementById('import-json-input').onchange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -1593,24 +1734,22 @@ document.addEventListener('DOMContentLoaded', () => {
     reader.onload = (event) => {
       try {
         const imported = JSON.parse(event.target.result);
-        if (imported.months) {
-          state = imported;
-          saveState();
-          renderApp();
-          alert("Sakura matrix data successfully imported! 🌸");
-        } else {
-          alert("Invalid backup file format.");
-        }
+        const validated = sanitizeImportedData(imported);
+        state = validated;
+        saveState();
+        renderApp();
+        alert("Sakura matrix data successfully imported! 🌸");
       } catch (err) {
-        alert("Error parsing JSON file.");
+        alert("Invalid or corrupt backup file format.");
       }
     };
     reader.readAsText(file);
+    e.target.value = '';
   };
 
   document.getElementById('reset-data-btn').onclick = () => {
     if (confirm("Reset to default demonstration matrix?")) {
-      state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      state = getInitialDefaultData();
       saveState();
       renderApp();
     }
@@ -1624,6 +1763,26 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!wrapper || !wrapper.contains(e.target)) {
         menu.classList.add('hidden');
       }
+    }
+  });
+
+  // Global Escape key handler to close all modals and drawers
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const goalModal = document.getElementById('goal-modal');
+      if (goalModal && !goalModal.classList.contains('hidden')) goalModal.classList.add('hidden');
+
+      if (typeof closeNoteModal === 'function') closeNoteModal();
+      if (typeof closeWrappedModal === 'function') closeWrappedModal();
+
+      const aiDrawer = document.getElementById('ai-coach-drawer');
+      if (aiDrawer && !aiDrawer.classList.contains('hidden')) aiDrawer.classList.add('hidden');
+
+      const aiSettings = document.getElementById('ai-settings-modal');
+      if (aiSettings && !aiSettings.classList.contains('hidden')) aiSettings.classList.add('hidden');
+
+      const themeMenu = document.getElementById('theme-dropdown-menu');
+      if (themeMenu && !themeMenu.classList.contains('hidden')) themeMenu.classList.add('hidden');
     }
   });
 

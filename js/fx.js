@@ -3,6 +3,22 @@
  */
 
 let soundEnabled = true;
+let sharedAudioCtx = null;
+
+function getAudioContext() {
+  try {
+    if (!sharedAudioCtx) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) sharedAudioCtx = new AudioContextClass();
+    }
+    if (sharedAudioCtx && sharedAudioCtx.state === 'suspended') {
+      sharedAudioCtx.resume().catch(() => {});
+    }
+    return sharedAudioCtx;
+  } catch (e) {
+    return null;
+  }
+}
 
 /**
  * Cute, gentle marimba/kalimba chime on tick
@@ -10,19 +26,16 @@ let soundEnabled = true;
 function playTickSound(completed) {
   if (!soundEnabled) return;
   try {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) return;
-    const ctx = new AudioContext();
+    const ctx = getAudioContext();
+    if (!ctx) return;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
 
     osc.type = 'sine';
     if (completed) {
-      // Cute pleasant high chime (E5 -> G#5)
       osc.frequency.setValueAtTime(659.25, ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(830.61, ctx.currentTime + 0.07);
     } else {
-      // Soft gentle tap
       osc.frequency.setValueAtTime(350, ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.05);
     }
@@ -43,9 +56,8 @@ function playTickSound(completed) {
 function playFanfareSound() {
   if (!soundEnabled) return;
   try {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) return;
-    const ctx = new AudioContext();
+    const ctx = getAudioContext();
+    if (!ctx) return;
 
     // Cute major pentatonic arpeggio (C5, D5, E5, G5, A5, C6)
     const notes = [523.25, 587.33, 659.25, 783.99, 880, 1046.5];

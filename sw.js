@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sakura-matrix-v4';
+const CACHE_NAME = 'sakura-matrix-v5';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -25,7 +25,7 @@ const ASSETS_TO_CACHE = [
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE).catch(err => console.log("Cache pre-fetch error", err));
+      return cache.addAll(ASSETS_TO_CACHE).catch(err => console.warn('Cache pre-fetch note:', err));
     })
   );
   self.skipWaiting();
@@ -46,9 +46,33 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
+  const url = new URL(e.request.url);
+
+  // Do not intercept or cache external AI API requests
+  if (url.hostname.includes('googleapis.com')) {
+    return;
+  }
+
+  // Stale-While-Revalidate for app assets
   e.respondWith(
-    caches.match(e.request).then((cached) => {
-      return cached || fetch(e.request).catch(() => cached);
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.match(e.request).then((cached) => {
+        const fetchPromise = fetch(e.request).then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            cache.put(e.request, networkResponse.clone());
+          }
+          return networkResponse;
+        }).catch(() => {
+          // If offline and request is navigation, fallback to cached index.html
+          if (e.request.mode === 'navigate') {
+            return cache.match('./index.html');
+          }
+          return cached;
+        });
+
+        // Return cached immediately if found, otherwise await network
+        return cached || fetchPromise;
+      });
     })
   );
 });
