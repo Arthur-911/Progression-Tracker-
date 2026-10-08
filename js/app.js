@@ -422,6 +422,89 @@ function getInitialDefaultData() {
 
 const DEFAULT_DATA = getInitialDefaultData();
 
+function sanitizeImportedData(data) {
+  if (!data || typeof data !== 'object' || !data.months || typeof data.months !== 'object') {
+    throw new Error('Invalid backup structure');
+  }
+
+  const validPillars = ['health', 'career', 'learning', 'finance', 'personal'];
+  const validTimes = ['morning', 'afternoon', 'evening', 'any'];
+
+  const sanitizedMonths = {};
+  const monthEntries = Object.entries(data.months).slice(0, 120);
+
+  for (const [mId, mObj] of monthEntries) {
+    if (!mObj || typeof mObj !== 'object') continue;
+    // Guard against Prototype Pollution
+    if (mId === '__proto__' || mId === 'constructor' || mId === 'prototype') continue;
+
+    const rawId = String(mObj.id || mId).trim();
+    const cleanId = /^\d{4}-\d{2}$/.test(rawId) ? rawId : String(rawId).replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 10);
+    if (!cleanId || cleanId === '__proto__' || cleanId === 'constructor' || cleanId === 'prototype') continue;
+
+    const cleanTitle = escapeHtml(String(mObj.title || cleanId).trim().slice(0, 60));
+    const shieldsUsed = {};
+    if (mObj.shieldsUsed && typeof mObj.shieldsUsed === 'object') {
+      for (const [dStr, val] of Object.entries(mObj.shieldsUsed)) {
+        const d = parseInt(dStr, 10);
+        if (d >= 1 && d <= 31 && val) shieldsUsed[d] = true;
+      }
+    }
+
+    const cleanGoals = [];
+    if (Array.isArray(mObj.goals)) {
+      mObj.goals.slice(0, 50).forEach((g, idx) => {
+        if (!g || typeof g !== 'object') return;
+        const id = String(g.id || 'g-' + idx).replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 32);
+        if (!id) return;
+        const title = String(g.title || 'Habit').trim().slice(0, 100);
+        const pillarId = validPillars.includes(g.pillarId) ? g.pillarId : 'health';
+        const timeOfDay = validTimes.includes(g.timeOfDay) ? g.timeOfDay : 'any';
+        const effort = Math.max(1, Math.min(5, parseInt(g.effort, 10) || 1));
+        const targetDays = Math.max(1, Math.min(31, parseInt(g.targetDays, 10) || 30));
+        const checks = {};
+        if (g.checks && typeof g.checks === 'object') {
+          for (const [dStr, val] of Object.entries(g.checks)) {
+            const d = parseInt(dStr, 10);
+            if (d >= 1 && d <= 31 && val) checks[d] = true;
+          }
+        }
+        const notes = {};
+        if (g.notes && typeof g.notes === 'object') {
+          for (const [dStr, n] of Object.entries(g.notes)) {
+            const d = parseInt(dStr, 10);
+            if (d >= 1 && d <= 31 && n && typeof n === 'object') {
+              notes[d] = {
+                mood: String(n.mood || '🌸').slice(0, 6),
+                text: String(n.text || '').trim().slice(0, 300)
+              };
+            }
+          }
+        }
+        cleanGoals.push({ id, title, pillarId, timeOfDay, effort, targetDays, checks, notes });
+      });
+    }
+
+    sanitizedMonths[cleanId] = {
+      id: cleanId,
+      title: cleanTitle,
+      shieldsUsed,
+      goals: cleanGoals
+    };
+  }
+
+  const validMonthKeys = Object.keys(sanitizedMonths);
+  if (validMonthKeys.length === 0) {
+    throw new Error('No valid months found');
+  }
+
+  const activeMonthId = (typeof data.activeMonthId === 'string' && sanitizedMonths[data.activeMonthId])
+    ? data.activeMonthId
+    : validMonthKeys[0];
+
+  return { activeMonthId, months: sanitizedMonths };
+}
+
 let state = loadState();
 let currentPillarFilter = 'all';
 let currentTimeFilter = 'all';
@@ -435,7 +518,7 @@ function loadState() {
     if (saved) {
       const parsed = JSON.parse(saved);
       if (parsed && parsed.months && typeof parsed.months === 'object') {
-        return parsed;
+        return sanitizeImportedData(parsed);
       }
     }
   } catch (e) {
@@ -449,6 +532,7 @@ function saveState() {
     localStorage.setItem('monthly_sakura_all_features_state', JSON.stringify(state));
   } catch (e) {
     console.error("Failed to save state:", e);
+    alert("Warning: Local storage quota exceeded or disabled. Changes could not be saved to browser storage.");
   }
 }
 
@@ -755,8 +839,9 @@ function renderTable(activeMonth, goals, daysInMonth, isActualCurrentMonth, curr
           <div class="relative inline-block">
             <button 
               type="button" 
-              onclick="toggleCheck('${safeGoalId}', ${day}, event)"
-              oncontextmenu="event.preventDefault(); openNoteModal('${safeGoalId}', ${day});"
+              data-action="toggle-check"
+              data-goal-id="${safeGoalId}"
+              data-day="${day}"
               title="${safeCellTitle}"
               aria-label="${safeCellTitle}"
               class="matrix-cell-btn w-6 h-6 mx-auto rounded-md flex items-center justify-center font-bold text-slate-950 shadow-sm relative ${
@@ -790,7 +875,7 @@ function renderTable(activeMonth, goals, daysInMonth, isActualCurrentMonth, curr
         </div>
       </td>
       <td class="py-2.5 px-2 text-center border-l border-[var(--border)]">
-        <button onclick="deleteGoal('${safeGoalId}')" title="Delete Habit" aria-label="Delete Habit" class="text-pink-300/40 hover:text-rose-400 p-0.5 rounded transition opacity-50 group-hover:opacity-100">
+        <button type="button" data-action="delete-goal" data-goal-id="${safeGoalId}" title="Delete Habit" aria-label="Delete Habit" class="text-pink-300/40 hover:text-rose-400 p-0.5 rounded transition opacity-50 group-hover:opacity-100">
           <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
         </button>
       </td>
@@ -1282,9 +1367,9 @@ function renderBriefing(activeMonth, daysInMonth, isActualCurrentMonth, currentD
       chipsContainer.innerHTML = '';
     } else {
       briefingMsg.textContent = `${uncompletedToday.length} habit${uncompletedToday.length > 1 ? 's' : ''} remaining today. Tap to check off or type below:`;
-      // Populate interactive quick-tap chips safely escaped
+      // Populate interactive quick-tap chips safely with data attributes
       chipsContainer.innerHTML = uncompletedToday.slice(0, 3).map(g => `
-        <button onclick="toggleCheck('${escapeHtml(g.id)}', ${currentDay}, event)" class="px-2 py-1 rounded-lg border border-pink-400/25 bg-pink-500/10 hover:bg-pink-500/25 text-[10px] font-bold text-pink-200 transition flex items-center gap-1 whitespace-nowrap shadow-sm">
+        <button type="button" data-action="quick-check" data-goal-id="${escapeHtml(g.id)}" data-day="${currentDay}" class="px-2 py-1 rounded-lg border border-pink-400/25 bg-pink-500/10 hover:bg-pink-500/25 text-[10px] font-bold text-pink-200 transition flex items-center gap-1 whitespace-nowrap shadow-sm">
           <span>+</span> <span>${escapeHtml(g.title.split(' ')[0])}</span>
         </button>
       `).join('');
@@ -1622,11 +1707,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   goalForm.onsubmit = (e) => {
     e.preventDefault();
-    const title = document.getElementById('goal-title').value.trim();
+    const title = document.getElementById('goal-title').value.trim().slice(0, 100);
     const pillarId = document.getElementById('goal-pillar').value;
     const timeOfDay = document.getElementById('goal-tod') ? document.getElementById('goal-tod').value : 'any';
-    const effort = parseInt(document.getElementById('goal-effort').value, 10);
-    const targetDays = parseInt(document.getElementById('goal-target-days').value, 10) || 30;
+    const effort = Math.max(1, Math.min(5, parseInt(document.getElementById('goal-effort').value, 10) || 1));
+    const targetDays = Math.max(1, Math.min(31, parseInt(document.getElementById('goal-target-days').value, 10) || 30));
+
+    if (!title) return;
 
     const newGoal = {
       id: 'g-' + Date.now(),
@@ -1656,77 +1743,6 @@ document.addEventListener('DOMContentLoaded', () => {
     URL.revokeObjectURL(url);
   };
 
-  function sanitizeImportedData(data) {
-    if (!data || typeof data !== 'object' || !data.months || typeof data.months !== 'object') {
-      throw new Error('Invalid backup structure');
-    }
-
-    const validPillars = ['health', 'career', 'learning', 'finance', 'personal'];
-    const validTimes = ['morning', 'afternoon', 'evening', 'any'];
-
-    const sanitizedMonths = {};
-    for (const [mId, mObj] of Object.entries(data.months)) {
-      if (!mObj || typeof mObj !== 'object') continue;
-      const cleanId = String(mObj.id || mId).trim().slice(0, 10);
-      const cleanTitle = String(mObj.title || cleanId).trim().slice(0, 60);
-      const shieldsUsed = {};
-      if (mObj.shieldsUsed && typeof mObj.shieldsUsed === 'object') {
-        for (const [dStr, val] of Object.entries(mObj.shieldsUsed)) {
-          const d = parseInt(dStr, 10);
-          if (d >= 1 && d <= 31 && val) shieldsUsed[d] = true;
-        }
-      }
-      const cleanGoals = [];
-      if (Array.isArray(mObj.goals)) {
-        mObj.goals.forEach((g, idx) => {
-          if (!g || typeof g !== 'object') return;
-          const id = String(g.id || 'g-' + idx).replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 32);
-          const title = String(g.title || 'Habit').trim().slice(0, 100);
-          const pillarId = validPillars.includes(g.pillarId) ? g.pillarId : 'health';
-          const timeOfDay = validTimes.includes(g.timeOfDay) ? g.timeOfDay : 'any';
-          const effort = Math.max(1, Math.min(5, parseInt(g.effort, 10) || 1));
-          const targetDays = Math.max(1, Math.min(31, parseInt(g.targetDays, 10) || 30));
-          const checks = {};
-          if (g.checks && typeof g.checks === 'object') {
-            for (const [dStr, val] of Object.entries(g.checks)) {
-              const d = parseInt(dStr, 10);
-              if (d >= 1 && d <= 31 && val) checks[d] = true;
-            }
-          }
-          const notes = {};
-          if (g.notes && typeof g.notes === 'object') {
-            for (const [dStr, n] of Object.entries(g.notes)) {
-              const d = parseInt(dStr, 10);
-              if (d >= 1 && d <= 31 && n && typeof n === 'object') {
-                notes[d] = {
-                  mood: String(n.mood || '🌸').slice(0, 6),
-                  text: String(n.text || '').trim().slice(0, 300)
-                };
-              }
-            }
-          }
-          cleanGoals.push({ id, title, pillarId, timeOfDay, effort, targetDays, checks, notes });
-        });
-      }
-      sanitizedMonths[cleanId] = {
-        id: cleanId,
-        title: cleanTitle,
-        shieldsUsed,
-        goals: cleanGoals
-      };
-    }
-
-    if (Object.keys(sanitizedMonths).length === 0) {
-      throw new Error('No valid months found');
-    }
-
-    const activeMonthId = (typeof data.activeMonthId === 'string' && sanitizedMonths[data.activeMonthId])
-      ? data.activeMonthId
-      : Object.keys(sanitizedMonths)[0];
-
-    return { activeMonthId, months: sanitizedMonths };
-  }
-
   document.getElementById('import-json-input').onchange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -1754,6 +1770,53 @@ document.addEventListener('DOMContentLoaded', () => {
       renderApp();
     }
   };
+
+  // Delegated event listener for Matrix Table (Click & Context Menu)
+  const tableBody = document.getElementById('table-body');
+  if (tableBody) {
+    tableBody.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const action = btn.dataset.action;
+      const goalId = btn.dataset.goalId;
+      if (action === 'toggle-check') {
+        const day = parseInt(btn.dataset.day, 10);
+        if (goalId && !isNaN(day)) {
+          toggleCheck(goalId, day, e);
+        }
+      } else if (action === 'delete-goal') {
+        if (goalId) {
+          deleteGoal(goalId);
+        }
+      }
+    });
+
+    tableBody.addEventListener('contextmenu', (e) => {
+      const btn = e.target.closest('button[data-action="toggle-check"]');
+      if (btn) {
+        e.preventDefault();
+        const goalId = btn.dataset.goalId;
+        const day = parseInt(btn.dataset.day, 10);
+        if (goalId && !isNaN(day)) {
+          openNoteModal(goalId, day);
+        }
+      }
+    });
+  }
+
+  // Delegated event listener for Today's Quick Chips
+  const chipsContainer = document.getElementById('today-quick-chips');
+  if (chipsContainer) {
+    chipsContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-action="quick-check"]');
+      if (!btn) return;
+      const goalId = btn.dataset.goalId;
+      const day = parseInt(btn.dataset.day, 10);
+      if (goalId && !isNaN(day)) {
+        toggleCheck(goalId, day, e);
+      }
+    });
+  }
 
   // Close Theme Dropdown on outside click
   document.addEventListener('click', (e) => {

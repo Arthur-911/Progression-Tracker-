@@ -252,9 +252,15 @@ window.toggleAiSettingsModal = function() {
 
 window.saveAiApiKey = function() {
   const key = document.getElementById('gemini-api-key-input').value.trim();
+  const GEMINI_KEY_REGEX = /^AIza[0-9A-Za-z-_]{35}$/;
+
   if (key) {
+    if (!GEMINI_KEY_REGEX.test(key)) {
+      alert("Invalid Gemini API key format. A valid key starts with 'AIza' and is 39 characters long.");
+      return;
+    }
     localStorage.setItem('sakura_gemini_api_key', key);
-    alert("Gemini API Key saved! Your habit coach is now powered by live Gemini AI. ✨");
+    alert("Gemini API Key validated and saved! Your habit coach is now powered by live Gemini AI. ✨");
   } else {
     localStorage.removeItem('sakura_gemini_api_key');
   }

@@ -48,8 +48,11 @@ self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
 
+  // Ignore non-http/https requests (e.g. browser extensions)
+  if (!url.protocol.startsWith('http')) return;
+
   // Do not intercept or cache external AI API requests
-  if (url.hostname.includes('googleapis.com')) {
+  if (url.hostname === 'generativelanguage.googleapis.com' || url.hostname.endsWith('.googleapis.com')) {
     return;
   }
 
