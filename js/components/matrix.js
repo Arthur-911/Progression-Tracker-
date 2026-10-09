@@ -60,7 +60,9 @@ class AppMatrix extends HTMLElement {
                 <th class="py-3 px-3.5 text-center min-w-[125px] border-l border-[var(--border)]">
                   <span class="font-bold uppercase tracking-wider text-[10px] text-pink-100">Progress</span>
                 </th>
-                <th class="py-3 px-2 text-center min-w-[36px] border-l border-[var(--border)]"></th>
+                <th class="py-3 px-2 text-center min-w-[65px] border-l border-[var(--border)]">
+                  <span class="font-bold uppercase tracking-wider text-[10px] text-pink-100">Actions</span>
+                </th>
               </tr>
             </thead>
 

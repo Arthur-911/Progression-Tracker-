@@ -768,7 +768,9 @@ function renderTable(activeMonth, goals, daysInMonth, isActualCurrentMonth, curr
     <th class="py-2.5 px-3 text-center min-w-[125px] border-l border-[var(--border)]">
       <span class="font-bold uppercase tracking-wider text-[10px] text-pink-100">Progress</span>
     </th>
-    <th class="py-2.5 px-2 text-center min-w-[36px] border-l border-[var(--border)]"></th>
+    <th class="py-2.5 px-2 text-center min-w-[65px] border-l border-[var(--border)]">
+      <span class="font-bold uppercase tracking-wider text-[10px] text-pink-100">Actions</span>
+    </th>
   `;
   tableHeadTr.innerHTML = headerHtml;
 
@@ -799,14 +801,25 @@ function renderTable(activeMonth, goals, daysInMonth, isActualCurrentMonth, curr
 
     let rowHtml = `
       <td class="sticky-col-1 py-2.5 px-3 border-r border-[var(--border)] z-20 shadow-[2px_0_8px_rgba(0,0,0,0.4)]">
-        <div class="flex items-center justify-between gap-1.5">
-          <div class="font-semibold truncate text-xs text-white flex items-center gap-1" title="${safeGoalTitle}">
-            ${todEmoji ? `<span class="text-[10px]">${todEmoji}</span>` : ''}
-            <span>${safeGoalTitle}</span>
-          </div>
-          ${streak > 1 ? `<span class="flex items-center gap-0.5 text-[9px] font-bold text-amber-300 bg-amber-400/15 px-1 py-0.5 rounded-full border border-amber-400/25 font-mono-num">🔥${streak}d</span>` : ''}
+        <div class="flex items-center justify-between gap-1">
+          <button type="button" data-action="edit-goal" data-goal-id="${safeGoalId}" class="font-semibold text-left truncate text-xs text-white hover:text-pink-300 flex items-center gap-1 group/title transition cursor-pointer" title="Click to tweak ${safeGoalTitle}">
+            ${todEmoji ? `<span class="text-[10px] shrink-0">${todEmoji}</span>` : ''}
+            <span class="truncate">${safeGoalTitle}</span>
+            <i data-lucide="pencil" class="w-2.5 h-2.5 opacity-0 group-hover/title:opacity-100 text-pink-400 transition-opacity shrink-0"></i>
+          </button>
+          ${streak > 1 ? `<span class="shrink-0 flex items-center gap-0.5 text-[9px] font-bold text-amber-300 bg-amber-400/15 px-1 py-0.5 rounded-full border border-amber-400/25 font-mono-num">🔥${streak}d</span>` : ''}
         </div>
-        <div class="text-[10px] text-pink-200/60 mt-0.5 font-mono-num font-medium">${targetDays}d target</div>
+        <div class="flex items-center justify-between mt-1 text-[10px]">
+          <span class="text-pink-200/60 font-mono-num font-medium">${targetDays}d target</span>
+          <div class="flex items-center gap-0.5">
+            <button type="button" data-action="edit-goal" data-goal-id="${safeGoalId}" title="Edit / Tweak Habit" aria-label="Edit Habit" class="p-1 rounded hover:bg-pink-400/20 text-pink-200/60 hover:text-pink-200 transition">
+              <i data-lucide="pencil" class="w-3 h-3"></i>
+            </button>
+            <button type="button" data-action="delete-goal" data-goal-id="${safeGoalId}" title="Remove Habit" aria-label="Remove Habit" class="p-1 rounded hover:bg-rose-500/20 text-pink-300/40 hover:text-rose-400 transition">
+              <i data-lucide="trash-2" class="w-3 h-3"></i>
+            </button>
+          </div>
+        </div>
       </td>
 
       <td class="sticky-col-2 py-2.5 px-2.5 border-r border-[var(--border)] z-20 shadow-[2px_0_8px_rgba(0,0,0,0.4)]">
@@ -875,9 +888,14 @@ function renderTable(activeMonth, goals, daysInMonth, isActualCurrentMonth, curr
         </div>
       </td>
       <td class="py-2.5 px-2 text-center border-l border-[var(--border)]">
-        <button type="button" data-action="delete-goal" data-goal-id="${safeGoalId}" title="Delete Habit" aria-label="Delete Habit" class="text-pink-300/40 hover:text-rose-400 p-0.5 rounded transition opacity-50 group-hover:opacity-100">
-          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-        </button>
+        <div class="flex items-center justify-center gap-1">
+          <button type="button" data-action="edit-goal" data-goal-id="${safeGoalId}" title="Edit / Tweak Habit" aria-label="Edit Habit" class="text-pink-300/60 hover:text-pink-200 hover:bg-pink-400/20 p-1 rounded-md transition">
+            <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+          </button>
+          <button type="button" data-action="delete-goal" data-goal-id="${safeGoalId}" title="Remove Habit" aria-label="Remove Habit" class="text-pink-300/40 hover:text-rose-400 hover:bg-rose-500/20 p-1 rounded-md transition">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
       </td>
     `;
 
@@ -1639,14 +1657,169 @@ window.quickCheckAllToday = function() {
   renderApp();
 };
 
-window.deleteGoal = function(goalId) {
-  if (!confirm("Remove this habit from your matrix?")) return;
-  const month = state.months[state.activeMonthId];
-  if (month) {
-    month.goals = month.goals.filter(g => g.id !== goalId);
-    saveState();
-    renderApp();
+function populatePillarSelect() {
+  const select = document.getElementById('goal-pillar');
+  if (!select) return;
+  select.innerHTML = PILLARS.map(p => `<option value="${p.id}">${p.emoji} ${p.name}</option>`).join('');
+}
+
+window.closeGoalModal = function() {
+  const modal = document.getElementById('goal-modal');
+  if (modal) modal.classList.add('hidden');
+};
+
+window.openCreateGoalModal = function() {
+  const modal = document.getElementById('goal-modal');
+  const goalForm = document.getElementById('goal-form');
+  if (!modal || !goalForm) return;
+
+  populatePillarSelect();
+  goalForm.reset();
+
+  const editIdInput = document.getElementById('goal-edit-id');
+  if (editIdInput) editIdInput.value = '';
+
+  const headerIcon = document.getElementById('goal-modal-icon');
+  if (headerIcon) headerIcon.textContent = '🌸';
+
+  const heading = document.getElementById('goal-modal-heading');
+  if (heading) heading.textContent = 'New Habit Goal';
+
+  const submitBtn = document.getElementById('submit-goal-btn');
+  if (submitBtn) submitBtn.textContent = 'Save Goal 🌸';
+
+  const deleteBtn = document.getElementById('delete-goal-modal-btn');
+  if (deleteBtn) deleteBtn.classList.add('hidden');
+
+  const tweakSection = document.getElementById('goal-tweak-section');
+  if (tweakSection) tweakSection.classList.add('hidden');
+
+  const { year, month } = parseMonthId(state.activeMonthId);
+  const maxDays = getDaysInMonth(year, month);
+  const targetDaysInput = document.getElementById('goal-target-days');
+  if (targetDaysInput) {
+    targetDaysInput.value = maxDays;
+    targetDaysInput.max = maxDays;
   }
+
+  modal.classList.remove('hidden');
+  if (window.lucide) lucide.createIcons();
+};
+
+window.openEditGoalModal = function(goalId) {
+  const month = state.months[state.activeMonthId];
+  if (!month || !month.goals) return;
+  const goal = month.goals.find(g => g.id === goalId);
+  if (!goal) return;
+
+  const modal = document.getElementById('goal-modal');
+  const goalForm = document.getElementById('goal-form');
+  if (!modal || !goalForm) return;
+
+  populatePillarSelect();
+
+  const editIdInput = document.getElementById('goal-edit-id');
+  if (editIdInput) editIdInput.value = goal.id;
+
+  const titleInput = document.getElementById('goal-title');
+  if (titleInput) titleInput.value = goal.title || '';
+
+  const pillarSelect = document.getElementById('goal-pillar');
+  if (pillarSelect) pillarSelect.value = goal.pillarId || PILLARS[0].id;
+
+  const todSelect = document.getElementById('goal-tod');
+  if (todSelect) todSelect.value = goal.timeOfDay || 'any';
+
+  const effortSelect = document.getElementById('goal-effort');
+  if (effortSelect) effortSelect.value = String(goal.effort || 3);
+
+  const { year, month: mNum } = parseMonthId(state.activeMonthId);
+  const maxDays = getDaysInMonth(year, mNum);
+  const targetDaysInput = document.getElementById('goal-target-days');
+  if (targetDaysInput) {
+    targetDaysInput.value = goal.targetDays || maxDays;
+    targetDaysInput.max = maxDays;
+  }
+
+  const headerIcon = document.getElementById('goal-modal-icon');
+  if (headerIcon) headerIcon.textContent = '✏️';
+
+  const heading = document.getElementById('goal-modal-heading');
+  if (heading) heading.textContent = 'Tweak Habit Goal';
+
+  const submitBtn = document.getElementById('submit-goal-btn');
+  if (submitBtn) submitBtn.textContent = 'Save Changes ✨';
+
+  const deleteBtn = document.getElementById('delete-goal-modal-btn');
+  if (deleteBtn) {
+    deleteBtn.classList.remove('hidden');
+    deleteBtn.onclick = () => {
+      deleteGoal(goal.id);
+    };
+  }
+
+  const tweakSection = document.getElementById('goal-tweak-section');
+  if (tweakSection) {
+    tweakSection.classList.remove('hidden');
+
+    let checkedCount = 0;
+    const checks = goal.checks || {};
+    const shieldsUsed = month.shieldsUsed || {};
+    for (let d = 1; d <= maxDays; d++) {
+      if (checks[d] || shieldsUsed[d]) checkedCount++;
+    }
+    const tDays = goal.targetDays || maxDays;
+    const pct = Math.min(100, Math.round((checkedCount / tDays) * 100));
+
+    const progressText = document.getElementById('goal-tweak-progress-text');
+    if (progressText) {
+      progressText.textContent = `${checkedCount}/${tDays} days (${pct}%)`;
+    }
+
+    const resetChecksBtn = document.getElementById('reset-goal-checks-btn');
+    if (resetChecksBtn) {
+      resetChecksBtn.onclick = () => {
+        resetGoalChecks(goal.id);
+      };
+    }
+  }
+
+  modal.classList.remove('hidden');
+  if (window.lucide) lucide.createIcons();
+};
+
+window.resetGoalChecks = function(goalId) {
+  const month = state.months[state.activeMonthId];
+  if (!month || !month.goals) return;
+  const goal = month.goals.find(g => g.id === goalId);
+  if (!goal) return;
+
+  if (!confirm(`Reset all logged checkmarks for "${goal.title}" in ${month.title}?\n\nYour habit settings and notes will remain intact.`)) {
+    return;
+  }
+
+  goal.checks = {};
+  saveState();
+  closeGoalModal();
+  renderApp();
+  if (typeof playTickSound === 'function') playTickSound(true);
+};
+
+window.deleteGoal = function(goalId) {
+  const month = state.months[state.activeMonthId];
+  if (!month || !month.goals) return;
+  const goal = month.goals.find(g => g.id === goalId);
+  const goalTitle = goal ? goal.title : 'this habit';
+
+  if (!confirm(`Remove "${goalTitle}" from your matrix?\n\nThis will remove the habit and its progress for ${month.title}.`)) {
+    return;
+  }
+
+  month.goals = month.goals.filter(g => g.id !== goalId);
+  saveState();
+  closeGoalModal();
+  renderApp();
+  if (typeof playTickSound === 'function') playTickSound(false);
 };
 
 function changeMonth(delta) {
@@ -1684,53 +1857,74 @@ document.addEventListener('DOMContentLoaded', () => {
   const cancelModalBtn = document.getElementById('cancel-modal-btn');
   const goalForm = document.getElementById('goal-form');
 
-  function populatePillarSelect() {
-    const select = document.getElementById('goal-pillar');
-    select.innerHTML = PILLARS.map(p => `<option value="${p.id}">${p.emoji} ${p.name}</option>`).join('');
+  if (openModalBtn) {
+    openModalBtn.onclick = openCreateGoalModal;
   }
 
-  openModalBtn.onclick = () => {
-    populatePillarSelect();
-    goalForm.reset();
-    const { year, month } = parseMonthId(state.activeMonthId);
-    document.getElementById('goal-target-days').value = getDaysInMonth(year, month);
-    modal.classList.remove('hidden');
-    if (window.lucide) lucide.createIcons();
-  };
-
-  function closeModal() {
-    modal.classList.add('hidden');
+  if (closeModalBtn) {
+    closeModalBtn.onclick = closeGoalModal;
+  }
+  if (cancelModalBtn) {
+    cancelModalBtn.onclick = closeGoalModal;
   }
 
-  closeModalBtn.onclick = closeModal;
-  cancelModalBtn.onclick = closeModal;
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeGoalModal();
+      }
+    });
+  }
 
-  goalForm.onsubmit = (e) => {
-    e.preventDefault();
-    const title = document.getElementById('goal-title').value.trim().slice(0, 100);
-    const pillarId = document.getElementById('goal-pillar').value;
-    const timeOfDay = document.getElementById('goal-tod') ? document.getElementById('goal-tod').value : 'any';
-    const effort = Math.max(1, Math.min(5, parseInt(document.getElementById('goal-effort').value, 10) || 1));
-    const targetDays = Math.max(1, Math.min(31, parseInt(document.getElementById('goal-target-days').value, 10) || 30));
+  if (goalForm) {
+    goalForm.onsubmit = (e) => {
+      e.preventDefault();
+      const editId = (document.getElementById('goal-edit-id')?.value || '').trim();
+      const title = document.getElementById('goal-title').value.trim().slice(0, 100);
+      const pillarId = document.getElementById('goal-pillar').value;
+      const timeOfDay = document.getElementById('goal-tod') ? document.getElementById('goal-tod').value : 'any';
+      const effort = Math.max(1, Math.min(5, parseInt(document.getElementById('goal-effort').value, 10) || 1));
+      const targetDays = Math.max(1, Math.min(31, parseInt(document.getElementById('goal-target-days').value, 10) || 30));
 
-    if (!title) return;
+      if (!title) return;
 
-    const newGoal = {
-      id: 'g-' + Date.now(),
-      title,
-      pillarId,
-      timeOfDay,
-      effort,
-      targetDays,
-      checks: {},
-      notes: {}
+      const month = state.months[state.activeMonthId];
+      if (!month) return;
+
+      if (editId) {
+        const goal = (month.goals || []).find(g => g.id === editId);
+        if (goal) {
+          goal.title = title;
+          goal.pillarId = pillarId;
+          goal.timeOfDay = timeOfDay;
+          goal.effort = effort;
+          goal.targetDays = targetDays;
+          saveState();
+          closeGoalModal();
+          renderApp();
+          if (typeof playTickSound === 'function') playTickSound(true);
+        }
+      } else {
+        const newGoal = {
+          id: 'g-' + Date.now(),
+          title,
+          pillarId,
+          timeOfDay,
+          effort,
+          targetDays,
+          checks: {},
+          notes: {}
+        };
+
+        if (!month.goals) month.goals = [];
+        month.goals.push(newGoal);
+        saveState();
+        closeGoalModal();
+        renderApp();
+        if (typeof playTickSound === 'function') playTickSound(true);
+      }
     };
-
-    state.months[state.activeMonthId].goals.push(newGoal);
-    saveState();
-    closeModal();
-    renderApp();
-  };
+  }
 
   // Export / Import Handlers
   document.getElementById('export-json-btn').onclick = () => {
@@ -1783,6 +1977,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const day = parseInt(btn.dataset.day, 10);
         if (goalId && !isNaN(day)) {
           toggleCheck(goalId, day, e);
+        }
+      } else if (action === 'edit-goal') {
+        if (goalId) {
+          openEditGoalModal(goalId);
         }
       } else if (action === 'delete-goal') {
         if (goalId) {
